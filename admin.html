@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora Admin — Painel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar glass-card">
+      <div class="brand-row">
+        <div class="brand-icon"></div>
+        <div>
+          <h1>Aurora Admin</h1>
+          <p>Controle da plataforma</p>
+        </div>
+      </div>
+
+      <nav class="admin-nav">
+        <button class="admin-nav-item active" data-section="dashboard">▣ <span>Dashboard</span></button>
+        <button class="admin-nav-item" data-section="musicas">♫ <span>Músicas</span></button>
+        <button class="admin-nav-item" data-section="artistas">◉ <span>Artistas</span></button>
+        <button class="admin-nav-item" data-section="playlists">☰ <span>Playlists</span></button>
+        <button class="admin-nav-item" data-section="usuarios">⌘ <span>Usuários</span></button>
+        <button class="admin-nav-item" data-section="relatorios">◌ <span>Relatórios</span></button>
+        <button class="admin-nav-item" data-section="configuracoes">⚙ <span>Configurações</span></button>
+      </nav>
+
+      <div class="sidebar-foot glass-soft">
+        <p>Projeto pronto para integrar com backend, SQL e autenticação.</p>
+        <a href="index.html" class="sidebar-link">Ver home do usuário</a>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar glass-card">
+        <div>
+          <span class="eyebrow">Painel administrativo</span>
+          <h2 id="pageTitle">Dashboard geral</h2>
+        </div>
+
+        <div class="topbar-actions">
+          <div class="search-box glass-soft">
+            <span>⌕</span>
+            <input type="text" id="globalSearch" placeholder="Buscar músicas, usuários, playlists..." />
+          </div>
+          <button class="action-btn">＋ Nova música</button>
+          <div class="admin-user glass-soft">JL</div>
+        </div>
+      </header>
+
+      <section class="hero-row">
+        <article class="hero-card glass-card">
+          <div>
+            <span class="eyebrow">Visão geral</span>
+            <h3>Controle sua plataforma de streaming em um só lugar.</h3>
+            <p>
+              Gerencie catálogo, usuários, playlists, relatórios e indicadores com um visual premium no estilo Aurora.
+            </p>
+          </div>
+          <div class="hero-badges">
+            <span>SQL Ready</span>
+            <span>CRUD de músicas</span>
+            <span>Gestão de usuários</span>
+          </div>
+        </article>
+
+        <article class="status-card glass-card">
+          <h4>Status do sistema</h4>
+          <div class="status-list">
+            <div><span>API</span><strong class="ok">Online</strong></div>
+            <div><span>Banco</span><strong class="ok">Conectado</strong></div>
+            <div><span>Uploads</span><strong class="warn">2 pendentes</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="stats-grid">
+        <article class="metric-card glass-card">
+          <span>Total de usuários</span>
+          <strong>128.540</strong>
+          <small>+8,2% este mês</small>
+        </article>
+        <article class="metric-card glass-card">
+          <span>Músicas cadastradas</span>
+          <strong>18.320</strong>
+          <small>124 novas esta semana</small>
+        </article>
+        <article class="metric-card glass-card">
+          <span>Playlists oficiais</span>
+          <strong>412</strong>
+          <small>9 atualizadas hoje</small>
+        </article>
+        <article class="metric-card glass-card">
+          <span>Reproduções hoje</span>
+          <strong>2,4 mi</strong>
+          <small>Pico às 19h</small>
+        </article>
+      </section>
+
+      <section class="dashboard-grid">
+        <article class="panel glass-card chart-panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">Relatório</span>
+              <h3>Reproduções por dia</h3>
+            </div>
+            <button class="ghost-btn">Últimos 7 dias</button>
+          </div>
+
+          <div class="chart-bars">
+            <div class="bar-wrap"><span class="bar" style="height:48%"></span><small>Seg</small></div>
+            <div class="bar-wrap"><span class="bar" style="height:66%"></span><small>Ter</small></div>
+            <div class="bar-wrap"><span class="bar" style="height:58%"></span><small>Qua</small></div>
+            <div class="bar-wrap"><span class="bar" style="height:82%"></span><small>Qui</small></div>
+            <div class="bar-wrap"><span class="bar" style="height:72%"></span><small>Sex</small></div>
+            <div class="bar-wrap"><span class="bar" style="height:94%"></span><small>Sáb</small></div>
+            <div class="bar-wrap"><span class="bar" style="height:88%"></span><small>Dom</small></div>
+          </div>
+        </article>
+
+        <article class="panel glass-card alerts-panel">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">Alertas</span>
+              <h3>Itens que precisam de atenção</h3>
+            </div>
+          </div>
+
+          <div class="alert-item warn glass-soft">
+            <strong>2 uploads pendentes</strong>
+            <span>Arquivos enviados aguardando revisão.</span>
+          </div>
+          <div class="alert-item danger glass-soft">
+            <strong>1 denúncia de conteúdo</strong>
+            <span>Faixa “Night Heat” precisa ser analisada.</span>
+          </div>
+          <div class="alert-item ok glass-soft">
+            <strong>Backup concluído</strong>
+            <span>Última sincronização realizada com sucesso.</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="data-grid">
+        <article class="table-panel glass-card section-panel" data-panel="musicas">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">Catálogo</span>
+              <h3>Últimas músicas adicionadas</h3>
+            </div>
+            <button class="ghost-btn">Gerenciar</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Música</th>
+                  <th>Artista</th>
+                  <th>Gênero</th>
+                  <th>Status</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Midnight Echo</td>
+                  <td>Aurora Waves</td>
+                  <td>Synth Pop</td>
+                  <td><span class="badge ok">Publicado</span></td>
+                  <td><button class="table-btn">Editar</button></td>
+                </tr>
+                <tr>
+                  <td>Blue Static</td>
+                  <td>NOVA/9</td>
+                  <td>Electronic</td>
+                  <td><span class="badge warn">Rascunho</span></td>
+                  <td><button class="table-btn">Revisar</button></td>
+                </tr>
+                <tr>
+                  <td>Afterlight</td>
+                  <td>City Dreams</td>
+                  <td>Alternative</td>
+                  <td><span class="badge ok">Publicado</span></td>
+                  <td><button class="table-btn">Editar</button></td>
+                </tr>
+                <tr>
+                  <td>Pulse Runner</td>
+                  <td>Violet Run</td>
+                  <td>EDM</td>
+                  <td><span class="badge danger">Bloqueado</span></td>
+                  <td><button class="table-btn">Ver</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="table-panel glass-card section-panel" data-panel="usuarios">
+          <div class="panel-head">
+            <div>
+              <span class="eyebrow">Usuários</span>
+              <h3>Cadastros recentes</h3>
+            </div>
+            <button class="ghost-btn">Ver todos</button>
+          </div>
+
+          <div class="user-list">
+            <div class="user-item glass-soft">
+              <div>
+                <strong>João Lucas</strong>
+                <span>Premium • Cadastro hoje</span>
+              </div>
+              <button class="table-btn">Abrir</button>
+            </div>
+            <div class="user-item glass-soft">
+              <div>
+                <strong>Camila Prado</strong>
+                <span>Free • Cadastro ontem</span>
+              </div>
+              <button class="table-btn">Abrir</button>
+            </div>
+            <div class="user-item glass-soft">
+              <div>
+                <strong>Rafael Costa</strong>
+                <span>Premium • Cadastro ontem</span>
+              </div>
+              <button class="table-btn">Abrir</button>
+            </div>
+            <div class="user-item glass-soft">
+              <div>
+                <strong>Beatriz Lima</strong>
+                <span>Family • Há 2 dias</span>
+              </div>
+              <button class="table-btn">Abrir</button>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="bottom-grid">
+        <article class="mini-panel glass-card section-panel" data-panel="playlists">
+          <div class="panel-head">
+            <h3>Playlists em destaque</h3>
+            <button class="ghost-btn">Atualizar</button>
+          </div>
+          <div class="pill-list">
+            <span class="pill">Late Night Drive</span>
+            <span class="pill">Soft Focus</span>
+            <span class="pill">Neon Pop</span>
+            <span class="pill">Workout Pulse</span>
+          </div>
+        </article>
+
+        <article class="mini-panel glass-card section-panel" data-panel="relatorios">
+          <div class="panel-head">
+            <h3>Resumo de relatórios</h3>
+            <button class="ghost-btn">Exportar</button>
+          </div>
+          <ul class="report-list">
+            <li>Faixa mais tocada: <strong>Midnight Echo</strong></li>
+            <li>Artista em alta: <strong>NOVA/9</strong></li>
+            <li>Taxa de retenção: <strong>74%</strong></li>
+            <li>Usuários ativos hoje: <strong>39.420</strong></li>
+          </ul>
+        </article>
+
+        <article class="mini-panel glass-card section-panel" data-panel="configuracoes">
+          <div class="panel-head">
+            <h3>Configurações rápidas</h3>
+          </div>
+          <div class="settings-list">
+            <label><input type="checkbox" checked /> Habilitar novos cadastros</label>
+            <label><input type="checkbox" checked /> Publicação automática após revisão</label>
+            <label><input type="checkbox" /> Modo manutenção</label>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

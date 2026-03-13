@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora — Streaming de Música</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon"></div>
+        <div>
+          <h1>Aurora</h1>
+          <p>Feel every beat</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active">
+          <span>⌂</span>
+          <span>Início</span>
+        </button>
+        <button class="nav-item">
+          <span>◎</span>
+          <span>Explorar</span>
+        </button>
+        <button class="nav-item">
+          <span>◉</span>
+          <span>Rádio</span>
+        </button>
+        <button class="nav-item">
+          <span>♫</span>
+          <span>Biblioteca</span>
+        </button>
+      </nav>
+
+      <section class="library glass-card">
+        <div class="section-head">
+          <h3>Suas playlists</h3>
+          <button class="ghost-btn">+</button>
+        </div>
+
+        <div class="playlist-mini active-playlist">
+          <div class="mini-cover gradient-1"></div>
+          <div>
+            <strong>Late Night Drive</strong>
+            <span>28 músicas</span>
+          </div>
+        </div>
+
+        <div class="playlist-mini">
+          <div class="mini-cover gradient-2"></div>
+          <div>
+            <strong>Focus Mode</strong>
+            <span>16 músicas</span>
+          </div>
+        </div>
+
+        <div class="playlist-mini">
+          <div class="mini-cover gradient-3"></div>
+          <div>
+            <strong>Neon Pop</strong>
+            <span>34 músicas</span>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar glass-bar">
+        <div class="topbar-left">
+          <button class="circle-btn">‹</button>
+          <button class="circle-btn">›</button>
+          <div class="search-box">
+            <span>⌕</span>
+            <input type="text" placeholder="Busque músicas, artistas e playlists" />
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="user-pill glass-card">JL</div>
+        </div>
+      </header>
+
+      <section class="hero glass-card">
+        <div class="hero-content">
+          <span class="eyebrow">Streaming premium</span>
+          <h2>Descubra trilhas sonoras para cada momento.</h2>
+          <p>
+            Uma experiência que combina o layout envolvente do Spotify com a navegação elegante do Apple Music.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-btn" id="playFeatured">Ouvir agora</button>
+            <button class="secondary-btn">Ver playlists</button>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="album-stack album-a floating"></div>
+          <div class="album-stack album-b floating delay-1"></div>
+          <div class="album-stack album-c floating delay-2"></div>
+          <div class="waveform">
+            <span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section">
+        <div class="section-head">
+          <h3>Em alta</h3>
+          <a href="#">Ver tudo</a>
+        </div>
+
+        <div class="card-grid" id="trendingGrid">
+          <article class="music-card glass-card" data-title="Midnight Echo" data-artist="Aurora Waves">
+            <div class="cover gradient-1">
+              <button class="play-chip">▶</button>
+            </div>
+            <h4>Midnight Echo</h4>
+            <p>Aurora Waves</p>
+          </article>
+
+          <article class="music-card glass-card" data-title="Blue Static" data-artist="NOVA/9">
+            <div class="cover gradient-2">
+              <button class="play-chip">▶</button>
+            </div>
+            <h4>Blue Static</h4>
+            <p>NOVA/9</p>
+          </article>
+
+          <article class="music-card glass-card" data-title="Electric Bloom" data-artist="Violet Run">
+            <div class="cover gradient-3">
+              <button class="play-chip">▶</button>
+            </div>
+            <h4>Electric Bloom</h4>
+            <p>Violet Run</p>
+          </article>
+
+          <article class="music-card glass-card" data-title="Afterlight" data-artist="City Dreams">
+            <div class="cover gradient-4">
+              <button class="play-chip">▶</button>
+            </div>
+            <h4>Afterlight</h4>
+            <p>City Dreams</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section two-columns">
+        <div>
+          <div class="section-head">
+            <h3>Mixes para você</h3>
+            <a href="#">Atualizar</a>
+          </div>
+
+          <div class="mix-list glass-card">
+            <div class="mix-item" data-title="Neon Motion" data-artist="Mix automático">
+              <div class="mix-cover gradient-4"></div>
+              <div>
+                <strong>Neon Motion</strong>
+                <span>Eletrônica • Pop • Synthwave</span>
+              </div>
+              <button class="icon-btn">▶</button>
+            </div>
+
+            <div class="mix-item" data-title="Soft Focus" data-artist="Mix automático">
+              <div class="mix-cover gradient-5"></div>
+              <div>
+                <strong>Soft Focus</strong>
+                <span>Lo-fi • Chill • Ambient</span>
+              </div>
+              <button class="icon-btn">▶</button>
+            </div>
+
+            <div class="mix-item" data-title="Pulse Run" data-artist="Mix automático">
+              <div class="mix-cover gradient-6"></div>
+              <div>
+                <strong>Pulse Run</strong>
+                <span>Workout • House • EDM</span>
+              </div>
+              <button class="icon-btn">▶</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-head">
+            <h3>Artistas recomendados</h3>
+            <a href="#">Explorar</a>
+          </div>
+
+          <div class="artist-list">
+            <article class="artist-card glass-card">
+              <div class="artist-avatar gradient-2"></div>
+              <strong>Violet Run</strong>
+              <span>Synth Pop</span>
+            </article>
+
+            <article class="artist-card glass-card">
+              <div class="artist-avatar gradient-5"></div>
+              <strong>City Dreams</strong>
+              <span>Alternative</span>
+            </article>
+
+            <article class="artist-card glass-card">
+              <div class="artist-avatar gradient-3"></div>
+              <strong>NOVA/9</strong>
+              <span>Electronic</span>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="player glass-bar">
+    <div class="player-track">
+      <div class="player-cover gradient-1" id="playerCover"></div>
+      <div>
+        <strong id="currentTitle">Midnight Echo</strong>
+        <span id="currentArtist">Aurora Waves</span>
+      </div>
+    </div>
+
+    <div class="player-controls">
+      <button class="circle-btn small">⟲</button>
+      <button class="circle-btn small">⏮</button>
+      <button class="play-main" id="togglePlay">▶</button>
+      <button class="circle-btn small">⏭</button>
+      <button class="circle-btn small">⤮</button>
+    </div>
+
+    <div class="player-progress">
+      <span>1:12</span>
+      <div class="progress-line">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <span>3:45</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
