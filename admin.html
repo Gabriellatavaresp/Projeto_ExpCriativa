@@ -3,199 +3,272 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aurora Admin — Rebrand</title>
+  <title>Aurora Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="aurora-rebrand.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css" />
 </head>
 <body class="page-admin">
   <div class="bg-grid"></div>
   <div class="bg-orb"></div>
+  <div class="login-noise"></div>
 
-  <div class="admin-shell">
-    <aside class="admin-sidebar glass">
-      <div class="brand-row">
+  <div class="admin-shell admin-shell-refined">
+    <aside class="admin-sidebar admin-sidebar-refined glass-dark">
+      <div class="brand-row brand-login">
         <div class="brand-icon"></div>
         <div>
           <h1>Aurora Admin</h1>
-          <p>Content management hub</p>
+          <p>Painel de controle</p>
         </div>
       </div>
 
-      <nav class="admin-nav">
+      <div class="admin-sidebar-copy">
+        <span class="login-eyebrow">Operações</span>
+        <h2>Gerencie o seu catálogo</h2>
+        <p>Crie, edite e delete itens do sistema.</p>
+      </div>
+
+      <nav class="admin-nav admin-nav-refined">
         <button class="admin-nav-item active" data-section="dashboard"><span class="nav-emoji">▣</span><span>Dashboard</span></button>
         <button class="admin-nav-item" data-section="musicas"><span class="nav-emoji">♫</span><span>Músicas</span></button>
         <button class="admin-nav-item" data-section="artistas"><span class="nav-emoji">◉</span><span>Artistas</span></button>
         <button class="admin-nav-item" data-section="playlists"><span class="nav-emoji">☰</span><span>Playlists</span></button>
         <button class="admin-nav-item" data-section="usuarios"><span class="nav-emoji">⌘</span><span>Usuários</span></button>
-        <button class="admin-nav-item" data-section="relatorios"><span class="nav-emoji">◌</span><span>Relatórios</span></button>
-        <button class="admin-nav-item" data-section="configuracoes"><span class="nav-emoji">⚙</span><span>Configurações</span></button>
       </nav>
 
-      <div class="admin-callout glass-soft">
-        <span class="section-kicker">Rebrand ready</span>
-        <strong>Mesmo sistema visual da home.</strong>
-        <p>Cards glass, fundo claro, acentos aurora e hierarquia mais premium para o painel administrativo.</p>
-        <a class="sidebar-link" href="aurora-index-rebrand.html">Ver home →</a>
+      <div class="admin-sidebar-card glass">
+        <span class="featured-label">Precisa de ajuda?</span>
+        <strong>Todas as operações estão na página.</strong>
+        <p>Clique em um item do menu para começar.</p>
+        <a class="login-link" href="index.html">Voltar para login</a>
       </div>
     </aside>
 
-    <main class="admin-main">
-      <header class="admin-topbar glass">
+    <main class="admin-main admin-main-refined glass">
+      <header class="admin-topbar admin-topbar-refined">
         <div>
           <span class="section-kicker">Painel administrativo</span>
-          <h2 id="pageTitle">Dashboard geral</h2>
+          <h2 id="pageTitle">Dashboard</h2>
         </div>
-
-        <div class="topbar-actions">
-          <div class="search-box">
-            <span>⌕</span>
-            <input type="text" id="globalSearch" placeholder="Buscar músicas, usuários, playlists..." />
-          </div>
-          <button class="action-btn">＋ Nova música</button>
-          <div class="admin-user">JL</div>
-        </div>
+        <div class="admin-user">JL</div>
       </header>
 
-      <section class="page-head glass-soft" data-reveal>
+      <!-- DASHBOARD -->
+      <section class="admin-hero-refined section-panel" data-panel="dashboard" data-reveal>
         <div>
-          <h2>Admin dashboard repensado para o Aurora</h2>
-          <p>O painel agora conversa visualmente com a home: menos aparência de sistema genérico e mais cara de plataforma premium de streaming.</p>
-        </div>
-        <div class="filter-row">
-          <button class="filter-chip">Últimos 7 dias</button>
-          <button class="filter-chip">Conteúdo</button>
-          <button class="filter-chip">Usuários</button>
+          <span class="login-eyebrow">Bem-vindo</span>
+          <h3>Painel de controle simplificado</h3>
+          <p>Selecione uma seção no menu para gerenciar músicas, artistas, playlists e usuários.</p>
         </div>
       </section>
 
-      <section class="hero-row" data-reveal>
-        <article class="hero-card glass section-panel" data-panel="dashboard">
-          <div>
-            <span class="section-kicker">Visão geral</span>
-            <h3>Controle catálogo, curadoria e experiência da plataforma em um único lugar.</h3>
-            <p>Da ingestão de faixas ao monitoramento de métricas, o Aurora Admin organiza decisões operacionais com mais clareza, contraste e consistência visual.</p>
-          </div>
-          <div class="hero-badges">
-            <span>Catalog curation</span>
-            <span>Artist ops</span>
-            <span>User insights</span>
-          </div>
-        </article>
-
-        <article class="status-card glass-soft section-panel" data-panel="dashboard">
-          <h4>Status do sistema</h4>
-          <div class="status-list">
-            <div><span>API</span><strong class="ok">Online</strong></div>
-            <div><span>Banco</span><strong class="ok">Conectado</strong></div>
-            <div><span>Uploads</span><strong class="warn">2 pendentes</strong></div>
-            <div><span>Moderação</span><strong class="danger">1 alerta</strong></div>
-          </div>
-        </article>
-      </section>
-
-      <section class="stats-grid" data-reveal>
-        <article class="metric-card glass-soft"><span>Total de usuários</span><strong>128.540</strong><small class="metric-trend up">↑ 8,2% este mês</small></article>
-        <article class="metric-card glass-soft"><span>Músicas cadastradas</span><strong>18.320</strong><small class="metric-trend up">↑ 124 novas esta semana</small></article>
-        <article class="metric-card glass-soft"><span>Playlists oficiais</span><strong>412</strong><small class="metric-trend up">↑ 9 atualizadas hoje</small></article>
-        <article class="metric-card glass-soft"><span>Reproduções hoje</span><strong>2,4 mi</strong><small class="metric-trend down">↓ Pico menor que ontem</small></article>
-      </section>
-
-      <section class="dashboard-grid" data-reveal>
-        <article class="panel glass section-panel" data-panel="relatorios">
+      <!-- SEÇÃO: MÚSICAS -->
+      <section class="admin-content-grid" data-reveal data-section-content="musicas" style="display: none;">
+        <article class="table-panel glass-soft">
           <div class="panel-head">
             <div>
-              <span class="section-kicker">Relatório</span>
-              <h3>Reproduções por dia</h3>
+              <span class="section-kicker">Músicas</span>
+              <h3>Gerenciar catálogo</h3>
             </div>
-            <button class="ghost-btn">Últimos 7 dias</button>
-          </div>
-
-          <div class="chart-bars">
-            <div class="bar-wrap"><span class="bar" style="height:48%"></span><small>Seg</small></div>
-            <div class="bar-wrap"><span class="bar" style="height:66%"></span><small>Ter</small></div>
-            <div class="bar-wrap"><span class="bar" style="height:58%"></span><small>Qua</small></div>
-            <div class="bar-wrap"><span class="bar" style="height:82%"></span><small>Qui</small></div>
-            <div class="bar-wrap"><span class="bar" style="height:72%"></span><small>Sex</small></div>
-            <div class="bar-wrap"><span class="bar" style="height:94%"></span><small>Sáb</small></div>
-            <div class="bar-wrap"><span class="bar" style="height:88%"></span><small>Dom</small></div>
-          </div>
-        </article>
-
-        <article class="panel glass-soft alerts-panel section-panel" data-panel="dashboard">
-          <div class="panel-head">
-            <div>
-              <span class="section-kicker">Alertas</span>
-              <h3>Itens que pedem ação</h3>
-            </div>
-          </div>
-          <div class="alert-item"><strong>2 uploads pendentes</strong><span>Arquivos enviados aguardando revisão editorial.</span></div>
-          <div class="alert-item"><strong>1 denúncia de conteúdo</strong><span>Faixa “Night Heat” precisa ser analisada.</span></div>
-          <div class="alert-item"><strong>Backup concluído</strong><span>Última sincronização ocorreu às 07:24.</span></div>
-        </article>
-      </section>
-
-      <section class="data-grid" data-reveal>
-        <article class="table-panel glass section-panel" data-panel="musicas">
-          <div class="panel-head">
-            <div>
-              <span class="section-kicker">Catálogo</span>
-              <h3>Últimas músicas adicionadas</h3>
-            </div>
-            <button class="ghost-btn">Gerenciar</button>
+            <button class="action-btn" onclick="openAddModal('musica')">＋ Adicionar música</button>
           </div>
 
           <div class="table-wrap">
-            <table>
+            <table id="musicasTable">
               <thead>
-                <tr><th>Música</th><th>Artista</th><th>Gênero</th><th>Status</th><th>Ação</th></tr>
+                <tr>
+                  <th>Título</th>
+                  <th>Artista</th>
+                  <th>Duração</th>
+                  <th>Ações</th>
+                </tr>
               </thead>
               <tbody>
-                <tr><td>Midnight Echo</td><td>Aurora Waves</td><td>Synth Pop</td><td><span class="badge ok">Publicado</span></td><td><button class="table-btn">Editar</button></td></tr>
-                <tr><td>Blue Static</td><td>NOVA/9</td><td>Electronic</td><td><span class="badge warn">Rascunho</span></td><td><button class="table-btn">Revisar</button></td></tr>
-                <tr><td>Afterlight</td><td>City Dreams</td><td>Alternative</td><td><span class="badge ok">Publicado</span></td><td><button class="table-btn">Editar</button></td></tr>
-                <tr><td>Pulse Runner</td><td>Violet Run</td><td>EDM</td><td><span class="badge danger">Bloqueado</span></td><td><button class="table-btn">Ver</button></td></tr>
+                <tr>
+                  <td>Sunset Dreams</td>
+                  <td>Aurora</td>
+                  <td>3:45</td>
+                  <td>
+                    <button class="table-btn" onclick="editItem('musica', 1)">Editar</button>
+                    <button class="table-btn" onclick="deleteItem('musica', 1)">Deletar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Midnight Echo</td>
+                  <td>Luna Sound</td>
+                  <td>4:12</td>
+                  <td>
+                    <button class="table-btn" onclick="editItem('musica', 2)">Editar</button>
+                    <button class="table-btn" onclick="deleteItem('musica', 2)">Deletar</button>
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
         </article>
+      </section>
 
-        <article class="table-panel glass-soft section-panel" data-panel="usuarios">
+      <!-- SEÇÃO: ARTISTAS -->
+      <section class="admin-content-grid" data-reveal data-section-content="artistas" style="display: none;">
+        <article class="table-panel glass-soft">
           <div class="panel-head">
             <div>
-              <span class="section-kicker">Usuários</span>
-              <h3>Cadastros recentes</h3>
+              <span class="section-kicker">Artistas</span>
+              <h3>Gerenciar artistas</h3>
             </div>
-            <button class="ghost-btn">Ver todos</button>
+            <button class="action-btn" onclick="openAddModal('artista')">＋ Adicionar artista</button>
           </div>
 
-          <div class="user-list">
-            <div class="user-item"><div><strong>João Lucas</strong><span>Premium • Cadastro hoje</span></div><button class="table-btn">Abrir</button></div>
-            <div class="user-item"><div><strong>Camila Prado</strong><span>Free • 4 playlists públicas</span></div><button class="table-btn">Abrir</button></div>
-            <div class="user-item"><div><strong>Mateus Lima</strong><span>Premium • Engajamento alto</span></div><button class="table-btn">Abrir</button></div>
+          <div class="table-wrap">
+            <table id="artistasTable">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Gênero</th>
+                  <th>Músicas</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Aurora</td>
+                  <td>Eletrônico</td>
+                  <td>12</td>
+                  <td>
+                    <button class="table-btn" onclick="editItem('artista', 1)">Editar</button>
+                    <button class="table-btn" onclick="deleteItem('artista', 1)">Deletar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Luna Sound</td>
+                  <td>Pop</td>
+                  <td>8</td>
+                  <td>
+                    <button class="table-btn" onclick="editItem('artista', 2)">Editar</button>
+                    <button class="table-btn" onclick="deleteItem('artista', 2)">Deletar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </article>
       </section>
 
-      <section class="bottom-grid" data-reveal>
-        <article class="mini-panel glass-soft section-panel" data-panel="artistas">
-          <div class="panel-head"><div><span class="section-kicker">Artists</span><h3>Curadoria em destaque</h3></div></div>
-          <div class="list-row"><div class="mini-cover gradient-2"></div><div><strong>Violet Run</strong><span>Próximo lançamento em 2 dias</span></div></div>
-          <div class="list-row"><div class="mini-cover gradient-5"></div><div><strong>City Dreams</strong><span>Campanha editorial ativa</span></div></div>
-          <div class="list-row"><div class="mini-cover gradient-3"></div><div><strong>NOVA/9</strong><span>Performance alta em descoberta</span></div></div>
-        </article>
+      <!-- SEÇÃO: PLAYLISTS -->
+      <section class="admin-content-grid" data-reveal data-section-content="playlists" style="display: none;">
+        <article class="table-panel glass-soft">
+          <div class="panel-head">
+            <div>
+              <span class="section-kicker">Playlists</span>
+              <h3>Gerenciar playlists</h3>
+            </div>
+            <button class="action-btn" onclick="openAddModal('playlist')">＋ Adicionar playlist</button>
+          </div>
 
-        <article class="mini-panel glass-soft section-panel" data-panel="playlists">
-          <div class="panel-head"><div><span class="section-kicker">Playlists</span><h3>Listas com maior crescimento</h3></div></div>
-          <div class="report-row"><div><strong>Night Shift</strong><span>+19% de plays</span></div><button class="table-btn">Abrir</button></div>
-          <div class="report-row"><div><strong>Soft Pulse</strong><span>+13% de saves</span></div><button class="table-btn">Abrir</button></div>
-          <div class="report-row"><div><strong>Study Aura</strong><span>+22% de tempo médio</span></div><button class="table-btn">Abrir</button></div>
+          <div class="table-wrap">
+            <table id="playlistsTable">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Criador</th>
+                  <th>Músicas</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Night Vibes</td>
+                  <td>Admin</td>
+                  <td>24</td>
+                  <td>
+                    <button class="table-btn" onclick="editItem('playlist', 1)">Editar</button>
+                    <button class="table-btn" onclick="deleteItem('playlist', 1)">Deletar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Focus Mode</td>
+                  <td>Admin</td>
+                  <td>18</td>
+                  <td>
+                    <button class="table-btn" onclick="editItem('playlist', 2)">Editar</button>
+                    <button class="table-btn" onclick="deleteItem('playlist', 2)">Deletar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <!-- SEÇÃO: USUÁRIOS -->
+      <section class="admin-content-grid" data-reveal data-section-content="usuarios" style="display: none;">
+        <article class="table-panel glass-soft">
+          <div class="panel-head">
+            <div>
+              <span class="section-kicker">Usuários</span>
+              <h3>Gerenciar usuários</h3>
+            </div>
+            <button class="action-btn" onclick="openAddModal('usuario')">＋ Adicionar usuário</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="usuariosTable">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Tipo</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>João Silva</td>
+                  <td>joao@email.com</td>
+                  <td>Premium</td>
+                  <td>
+                    <button class="table-btn" onclick="editItem('usuario', 1)">Editar</button>
+                    <button class="table-btn" onclick="deleteItem('usuario', 1)">Deletar</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Maria Santos</td>
+                  <td>maria@email.com</td>
+                  <td>Free</td>
+                  <td>
+                    <button class="table-btn" onclick="editItem('usuario', 2)">Editar</button>
+                    <button class="table-btn" onclick="deleteItem('usuario', 2)">Deletar</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </article>
       </section>
     </main>
   </div>
 
-  <script src="aurora-rebrand.js"></script>
+  <!-- MODAL PARA ADICIONAR/EDITAR -->
+  <div id="formModal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeModal()"></div>
+    <div class="modal-content glass">
+      <div class="modal-head">
+        <h3 id="modalTitle">Adicionar item</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+
+      <form id="itemForm" class="modal-form">
+        <div id="formFields"></div>
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" onclick="closeModal()">Cancelar</button>
+          <button type="submit" class="primary-btn">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

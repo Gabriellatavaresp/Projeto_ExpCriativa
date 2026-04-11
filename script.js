@@ -4,6 +4,8 @@ const togglePlay = document.getElementById('togglePlay');
 const playFeatured = document.getElementById('playFeatured');
 const progressFill = document.getElementById('progressFill');
 const waveBars = document.querySelectorAll('.waveform span');
+const passwordInput = document.getElementById('passwordInput');
+const togglePassword = document.getElementById('togglePassword');
 
 let isPlaying = false;
 let progress = 24;
@@ -68,7 +70,9 @@ document.querySelectorAll('.nav-item').forEach((button) => {
 
 const typeTarget = document.querySelector('[data-typewriter]');
 if (typeTarget) {
-  const words = ['discover', 'collect', 'feel', 'repeat'];
+  const words = document.body.classList.contains('page-login')
+    ? ['ritmo', 'mood', 'momento', 'repeat']
+    : ['discover', 'collect', 'feel', 'repeat'];
   let wordIndex = 0;
   let charIndex = 0;
   let deleting = false;
@@ -97,6 +101,15 @@ if (typeTarget) {
   };
 
   typeLoop();
+}
+
+if (togglePassword && passwordInput) {
+  togglePassword.addEventListener('click', () => {
+    const isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+    togglePassword.textContent = isHidden ? 'Ocultar' : 'Mostrar';
+    togglePassword.setAttribute('aria-label', isHidden ? 'Ocultar senha' : 'Mostrar senha');
+  });
 }
 
 const observer = new IntersectionObserver((entries) => {

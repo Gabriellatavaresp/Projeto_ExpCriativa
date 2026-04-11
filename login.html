@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body class="page-login">
+  <div class="bg-grid"></div>
+  <div class="bg-orb"></div>
+  <div class="login-noise"></div>
+
+  <main class="login-shell">
+    <section class="login-showcase glass-dark" data-reveal>
+      </div>
+
+      <div class="login-hero-copy">
+        <span class="login-eyebrow">O seu melhor Streaming de Música</span>
+        <h2>Entre e descubra o som que combina com o seu <span class="type-line"><span data-typewriter></span><span class="cursor">|</span></span></h2>
+        <p>
+          Acesso rápido, visual limpo e uma identidade inspirada em plataformas de streaming, sem distrair o usuário do que importa.
+        </p>
+      </div>
+
+
+    </section>
+
+    <section class="login-panel glass" data-reveal>
+      <div class="login-panel-head">
+        <span class="section-kicker">Acesse sua conta</span>
+        <h3>Seu próximo play começa aqui</h3>
+        <p>Entre para continuar ouvindo playlists, artistas salvos e recomendações personalizadas.</p>
+      </div>
+
+      <form class="login-form">
+        <label class="field">
+          <span>E-mail</span>
+          <input type="email" placeholder="voce@aurora.com" />
+        </label>
+
+        <label class="field">
+          <span>Senha</span>
+          <div class="password-wrap">
+            <input id="passwordInput" type="password" placeholder="Digite sua senha" />
+            <button id="togglePassword" class="password-toggle" type="button" aria-label="Mostrar senha">Mostrar</button>
+          </div>
+        </label>
+
+        <div class="login-options">
+          <label class="remember-choice">
+            <input type="checkbox" checked />
+            <span>Manter conectado</span>
+          </label>
+          <a href="#" class="login-link">Esqueci a senha</a>
+        </div>
+
+        <button class="primary-btn login-submit" type="submit">Entrar na Aurora</button>
+      </form>
+
+      <p class="login-signup">
+        Ainda não tem conta?
+        <a href="#" class="login-link">Criar cadastro</a>
+      </p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
