@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora — Create Account</title>
+  <link rel="stylesheet" href="cadastro.css" />
+
+  <!-- Fonts -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    @font-face {
+      font-family: 'Alte Haas Grotesk';
+      font-weight: 100 900;
+      src: url('https://db.onlinewebfonts.com/c/18a3c52865c8a23a8db0e67a1cd3f106?family=Alte+Haas+Grotesk') format('woff2'),
+           url('https://db.onlinewebfonts.com/c/18a3c52865c8a23a8db0e67a1cd3f106?family=Alte+Haas+Grotesk') format('woff');
+    }
+  </style>
+
+  
+<body>
+
+  <!-- Animated background blobs -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="page">
+    <div class="container">
+
+      <!-- Brand -->
+      <div class="brand">
+        <div class="logo-ring">
+          <!-- Music2 icon (Lucide) -->
+          <svg viewBox="0 0 24 24">
+            <path d="M9 18V5l12-2v13"/>
+            <circle cx="6" cy="18" r="3"/>
+            <circle cx="18" cy="16" r="3"/>
+          </svg>
+        </div>
+        <span class="brand-name">Aurora</span>
+        <span class="brand-tagline">Join the experience</span>
+      </div>
+
+      <!-- Glass card -->
+      <div class="card">
+        <h2 class="card-title">Crie sua conta</h2>
+
+        <form id="registerForm" novalidate>
+
+          <!-- Full Name -->
+          <div class="field">
+            <label for="name">Nome Completo</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <input
+                id="name"
+                type="text"
+                placeholder="Jane Doe"
+                autocomplete="name"
+              />
+            </div>
+            <span class="error-msg" id="nameError">Full name is required.</span>
+          </div>
+
+          <!-- CPF -->
+          <div class="field">
+            <label for="cpf">CPF</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <line x1="2" y1="10" x2="22" y2="10"/>
+              </svg>
+              <input
+                id="cpf"
+                type="text"
+                placeholder="000.000.000-00"
+                inputmode="numeric"
+                maxlength="14"
+                autocomplete="off"
+              />
+            </div>
+            <span class="error-msg" id="cpfError">Enter a valid CPF (11 digits).</span>
+          </div>
+
+          <!-- Email -->
+          <div class="field">
+            <label for="email">Email</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24">
+                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                <polyline points="2 4 12 13 22 4"/>
+              </svg>
+              <input
+                id="email"
+                type="email"
+                placeholder="your@email.com"
+                autocomplete="email"
+              />
+            </div>
+            <span class="error-msg" id="emailError">Enter a valid email address.</span>
+          </div>
+
+          <!-- Username -->
+          <div class="field">
+            <label for="username">User</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/>
+              </svg>
+              <input
+                id="username"
+                type="text"
+                placeholder="janedoe"
+                autocomplete="username"
+              />
+            </div>
+            <span class="error-msg" id="usernameError">Username must be at least 3 characters.</span>
+          </div>
+
+          <!-- Password -->
+          <div class="field">
+            <label for="password">Senha</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                class="has-toggle"
+                autocomplete="new-password"
+              />
+              <button type="button" class="toggle-pw" onclick="togglePw('password', this)">
+                <svg class="icon-eye" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            <span class="error-msg" id="passwordError">Password must be at least 8 characters.</span>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="field">
+            <label for="confirmPassword">Confirme sua senha</label>
+            <div class="input-wrap">
+              <svg class="input-icon" viewBox="0 0 24 24">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+              <input
+                id="confirmPassword"
+                type="password"
+                placeholder="••••••••"
+                class="has-toggle"
+                autocomplete="new-password"
+              />
+              <button type="button" class="toggle-pw" onclick="togglePw('confirmPassword', this)">
+                <svg class="icon-eye" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+            <span class="error-msg" id="confirmPasswordError">Passwords do not match.</span>
+          </div>
+
+          <!-- Terms -->
+          <label class="terms">
+            <input type="checkbox" id="terms" />
+            <span class="terms-text">
+              Eu concordo com
+              <button type="button" class="link">Terms of Service</button>
+              e
+              <button type="button" class="link">Privacy Policy</button>
+            </span>
+          </label>
+
+          <!-- Submit -->
+          <button type="submit" class="btn-submit">Criar conta</button>
+        </form>
+
+        <!-- Sign in link -->
+        <p class="signin-hint">
+          Já possui uma conta? <a href="/">Entrar</a>
+        </p>
+      </div>
+
+      <!-- Footer -->
+      <p class="footer">© 2026 Aurora Music. All rights reserved.</p>
+    </div>
+  </div>
+
+  <script>
+    /* ── CPF auto-mask ───────────────────────────────────────── */
+    const cpfInput = document.getElementById('cpf');
+
+    cpfInput.addEventListener('input', function () {
+      let digits = this.value.replace(/\D/g, '').slice(0, 11);
+      let formatted = digits;
+      if (digits.length > 9)
+        formatted = digits.slice(0,3)+'.'+digits.slice(3,6)+'.'+digits.slice(6,9)+'-'+digits.slice(9);
+      else if (digits.length > 6)
+        formatted = digits.slice(0,3)+'.'+digits.slice(3,6)+'.'+digits.slice(6);
+      else if (digits.length > 3)
+        formatted = digits.slice(0,3)+'.'+digits.slice(3);
+      this.value = formatted;
+    });
+
+    /* ── Password toggle ─────────────────────────────────────── */
+    const eyeOpen = `<svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+    const eyeOff  = `<svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+
+    function togglePw(id, btn) {
+      const input = document.getElementById(id);
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      btn.innerHTML = isHidden ? eyeOff : eyeOpen;
+    }
+
+    /* ── Validation helpers ──────────────────────────────────── */
+    function setError(fieldId, errorId, show) {
+      const input = document.getElementById(fieldId);
+      const msg   = document.getElementById(errorId);
+      if (show) {
+        input.classList.add('error');
+        msg.classList.add('visible');
+      } else {
+        input.classList.remove('error');
+        msg.classList.remove('visible');
+      }
+    }
+
+    /* Clear error on input */
+    ['name','cpf','email','username','password','confirmPassword'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        setError(id, id+'Error', false);
+      });
+    });
+
+    /* ── Form submit ─────────────────────────────────────────── */
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name            = document.getElementById('name').value.trim();
+      const cpf             = document.getElementById('cpf').value.replace(/\D/g,'');
+      const email           = document.getElementById('email').value.trim();
+      const username        = document.getElementById('username').value.trim();
+      const password        = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      let valid = true;
+
+      if (!name) {
+        setError('name', 'nameError', true); valid = false;
+      }
+      if (cpf.length !== 11) {
+        setError('cpf', 'cpfError', true); valid = false;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setError('email', 'emailError', true); valid = false;
+      }
+      if (username.length < 3) {
+        setError('username', 'usernameError', true); valid = false;
+      }
+      if (password.length < 8) {
+        setError('password', 'passwordError', true); valid = false;
+      }
+      if (confirmPassword !== password) {
+        setError('confirmPassword', 'confirmPasswordError', true); valid = false;
+      }
+
+      if (valid) {
+        // On success, redirect to login (or /home)
+        window.location.href = '/';
+      }
+    });
+  </script>
+</body>
+</html>

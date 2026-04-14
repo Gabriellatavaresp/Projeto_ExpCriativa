@@ -1,0 +1,357 @@
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sage:      #c6cca5;
+      --mint:      #8ab8a8;
+      --teal:      #6b9997;
+      --dark-teal: #54787d;
+      --brown:     #615145;
+      --bg:        #121212;
+      --font:      'Alte Haas Grotesk', 'Inter', sans-serif;
+      --radius-xl: 16px;
+      --radius-lg: 12px;
+      --glass-bg:  rgba(255,255,255,0.05);
+      --glass-border: rgba(255,255,255,0.10);
+    }
+
+    html, body {
+      min-height: 100%;
+      background-color: var(--bg);
+      color: #fff;
+      font-family: var(--font);
+      line-height: 1.5;
+    }
+
+    /* ── Background blobs ─────────────────────────────────────── */
+    .bg-blobs {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.20;
+      animation: pulse 4s ease-in-out infinite;
+    }
+
+    .blob-1 {
+      width: 600px; height: 600px;
+      top: 80px; left: 25%;
+      background: var(--mint);
+      animation-delay: 0s;
+    }
+
+    .blob-2 {
+      width: 600px; height: 600px;
+      bottom: 80px; right: 25%;
+      background: var(--teal);
+      animation-delay: 1s;
+    }
+
+    .blob-3 {
+      width: 600px; height: 600px;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--dark-teal);
+      animation-delay: 2s;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.20; }
+      50%       { opacity: 0.30; }
+    }
+
+    /* ── Page layout ──────────────────────────────────────────── */
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 48px 16px;
+    }
+
+    /* ── Container ────────────────────────────────────────────── */
+    .container {
+      width: 100%;
+      max-width: 448px;
+    }
+
+    /* ── Logo / Brand ─────────────────────────────────────────── */
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-ring {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--sage), var(--mint), var(--teal));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      box-shadow: 0 0 40px rgba(138,184,168,0.6);
+    }
+
+    .logo-ring svg {
+      width: 40px;
+      height: 40px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .brand-name {
+      font-size: 48px;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--sage), var(--mint), var(--teal));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .brand-tagline {
+      color: #9ca3af;
+      font-size: 15px;
+    }
+
+    /* ── Glass card ───────────────────────────────────────────── */
+    .card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      padding: 36px 32px;
+    }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* ── Form ─────────────────────────────────────────────────── */
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #d1d5db;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      stroke: #6b7280;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none;
+      flex-shrink: 0;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 13px 16px 13px 48px;
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input::placeholder { color: #6b7280; }
+
+    input:focus {
+      border-color: rgba(138,184,168,0.5);
+      box-shadow: 0 0 0 3px rgba(138,184,168,0.15);
+    }
+
+    input.has-toggle {
+      padding-right: 48px;
+    }
+
+    input.error {
+      border-color: rgba(239,68,68,0.5);
+    }
+
+    input.error:focus {
+      border-color: rgba(239,68,68,0.7);
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
+    }
+
+    .error-msg {
+      font-size: 12px;
+      color: #f87171;
+      display: none;
+    }
+
+    .error-msg.visible { display: block; }
+
+    /* Eye toggle button */
+    .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      color: #6b7280;
+      transition: color 0.2s;
+    }
+
+    .toggle-pw:hover { color: #d1d5db; }
+
+    .toggle-pw svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Terms checkbox ───────────────────────────────────────── */
+    .terms {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .terms input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      min-width: 16px;
+      padding: 0;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      accent-color: var(--mint);
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .terms-text {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .link {
+      color: var(--mint);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.2s;
+    }
+
+    .link:hover { color: var(--teal); }
+
+    /* ── Submit button ────────────────────────────────────────── */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(90deg, var(--mint), var(--teal), var(--dark-teal));
+      border: none;
+      color: #fff;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 4px;
+    }
+
+    .btn-submit:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(138,184,168,0.6);
+    }
+
+    .btn-submit:active { transform: scale(0.99); }
+
+    /* ── Sign-in link ─────────────────────────────────────────── */
+    .signin-hint {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 14px;
+      color: #9ca3af;
+    }
+
+    .signin-hint a {
+      color: var(--mint);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .signin-hint a:hover { color: var(--teal); }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    .footer {
+      margin-top: 32px;
+      margin-bottom: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px; }
+      .brand-name { font-size: 38px; }
+    }
+  </style>
+</head>
