@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aurora — Create Account</title>
+  <title>Aurora — Criar Conta</title>
   <link rel="stylesheet" href="cadastro.css" />
 
   <!-- Fonts -->
@@ -62,11 +62,11 @@
               <input
                 id="name"
                 type="text"
-                placeholder="Jane Doe"
+                placeholder="Seu nome"
                 autocomplete="name"
               />
             </div>
-            <span class="error-msg" id="nameError">Full name is required.</span>
+            <span class="error-msg" id="nameError">O campo "Nome Completo" precisa ser preenchido.</span>
           </div>
 
           <!-- CPF -->
@@ -86,7 +86,7 @@
                 autocomplete="off"
               />
             </div>
-            <span class="error-msg" id="cpfError">Enter a valid CPF (11 digits).</span>
+            <span class="error-msg" id="cpfError">CPF inválido. Tente novamente!</span>
           </div>
 
           <!-- Email -->
@@ -100,11 +100,11 @@
               <input
                 id="email"
                 type="email"
-                placeholder="your@email.com"
+                placeholder="seu@email.com"
                 autocomplete="email"
               />
             </div>
-            <span class="error-msg" id="emailError">Enter a valid email address.</span>
+            <span class="error-msg" id="emailError">Insira um e-mail válido.</span>
           </div>
 
           <!-- Username -->
@@ -118,11 +118,11 @@
               <input
                 id="username"
                 type="text"
-                placeholder="janedoe"
+                placeholder="Nome de usuario"
                 autocomplete="username"
               />
             </div>
-            <span class="error-msg" id="usernameError">Username must be at least 3 characters.</span>
+            <span class="error-msg" id="usernameError">Nome de usuário precisa ter no minímo 3 caracteres.</span>
           </div>
 
           <!-- Password -->
@@ -147,7 +147,7 @@
                 </svg>
               </button>
             </div>
-            <span class="error-msg" id="passwordError">Password must be at least 8 characters.</span>
+            <span class="error-msg" id="passwordError">A senha precisa ter no minimo 8 caracteres.</span>
           </div>
 
           <!-- Confirm Password -->
@@ -172,37 +172,37 @@
                 </svg>
               </button>
             </div>
-            <span class="error-msg" id="confirmPasswordError">Passwords do not match.</span>
+            <span class="error-msg" id="confirmPasswordError">As senhas não coincidem.</span>
           </div>
 
-          <!-- Terms -->
+          <!-- Termos -->
           <label class="terms">
             <input type="checkbox" id="terms" />
             <span class="terms-text">
               Eu concordo com
-              <button type="button" class="link">Terms of Service</button>
+              <button type="button" class="link">Termos de Serviço</button>
               e
-              <button type="button" class="link">Privacy Policy</button>
+              <button type="button" class="link">Politíca de Privacidade</button>
             </span>
           </label>
 
-          <!-- Submit -->
+          <!-- Enviar -->
           <button type="submit" class="btn-submit">Criar conta</button>
         </form>
 
-        <!-- Sign in link -->
+        <!-- Link para logar -->
         <p class="signin-hint">
-          Já possui uma conta? <a href="/">Entrar</a>
+          Já possui uma conta? <a href="login.html">Entrar</a>
         </p>
       </div>
 
       <!-- Footer -->
-      <p class="footer">© 2026 Aurora Music. All rights reserved.</p>
+      <p class="footer">© 2026 Aurora Music. Todos os direitos reservados.</p>
     </div>
   </div>
 
   <script>
-    /* ── CPF auto-mask ───────────────────────────────────────── */
+    // mascara CPF
     const cpfInput = document.getElementById('cpf');
 
     cpfInput.addEventListener('input', function () {
@@ -278,6 +278,10 @@
       }
       if (confirmPassword !== password) {
         setError('confirmPassword', 'confirmPasswordError', true); valid = false;
+      }
+
+      if (!confirmPassword) {
+        setError('confirmPassword', 'confirmPasswordError', true); valid = false
       }
 
       if (valid) {
