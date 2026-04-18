@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../static/css/main.css" />
+  <link rel="stylesheet" href="/static/css/main.css" />
 </head>
 <body class="page-admin">
   <div class="bg-grid"></div>
@@ -203,7 +203,7 @@
       </section>
 
       <!-- SEÇÃO: USUÁRIOS -->
-      <section class="admin-content-grid" data-reveal data-section-content="usuarios" style="display: none;">
+<section class="admin-content-grid" data-reveal data-section-content="usuarios">
         <article class="table-panel glass-soft">
           <div class="panel-head">
             <div>
@@ -219,29 +219,30 @@
                 <tr>
                   <th>Nome</th>
                   <th>Email</th>
-                  <th>Tipo</th>
+                  <th>Status</th>
                   <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
+                {% for u in usuarios %}
                 <tr>
-                  <td>João Silva</td>
-                  <td>joao@email.com</td>
-                  <td>Premium</td>
+                  <td>{{ u.nome }}</td>
+                  <td>{{ u.email }}</td>
                   <td>
-                    <button class="table-btn" onclick="editItem('usuario', 1)">Editar</button>
-                    <button class="table-btn" onclick="deleteItem('usuario', 1)">Deletar</button>
+                    {% if u.ativo == 1 %}
+                      <span style="color: #4ade80; font-weight: bold;">Ativo</span>
+                    {% else %}
+                      <span style="color: #f87171; font-weight: bold;">Inativo</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <button class="table-btn" style="margin-right: 8px;" onclick="openEditUserModal({{ u.id_usuario }}, '{{ u.nome }}', '{{ u.email }}', '{{ u.cpf }}')">Editar</button>
+                    <form action="/admin/usuario/excluir/{{ u.id_usuario }}" method="POST" style="display:inline;">
+                      <button type="submit" class="table-btn" onclick="return confirm('Tem certeza que deseja excluir o usuário {{ u.nome }}?')">Deletar</button>
+                    </form>
                   </td>
                 </tr>
-                <tr>
-                  <td>Maria Santos</td>
-                  <td>maria@email.com</td>
-                  <td>Free</td>
-                  <td>
-                    <button class="table-btn" onclick="editItem('usuario', 2)">Editar</button>
-                    <button class="table-btn" onclick="deleteItem('usuario', 2)">Deletar</button>
-                  </td>
-                </tr>
+                {% endfor %}
               </tbody>
             </table>
           </div>
@@ -259,8 +260,14 @@
         <button class="modal-close" onclick="closeModal()">✕</button>
       </div>
 
-      <form id="itemForm" class="modal-form">
-        <div id="formFields"></div>
+      <form id="itemForm" class="modal-form" action="/admin/usuario/adicionar" method="POST">
+        <div id="formFields">
+          <input type="text" name="nome" placeholder="Nome Completo" required>
+          <input type="email" name="email" placeholder="E-mail" required>
+          <input type="password" name="senha" placeholder="Senha" required>
+          <input type="text" name="cpf" placeholder="CPF (Apenas números)" maxlength="14" required>
+        </div>
+        
         <div class="modal-actions">
           <button type="button" class="ghost-btn" onclick="closeModal()">Cancelar</button>
           <button type="submit" class="primary-btn">Salvar</button>
@@ -268,7 +275,31 @@
       </form>
     </div>
   </div>
+  
+<div id="editModal" class="modal" style="display: none;">
+    <div class="modal-overlay" onclick="closeEditModal()"></div>
+    <div class="modal-content glass">
+      <div class="modal-head">
+        <h3>Editar Usuário</h3>
+        <button class="modal-close" onclick="closeEditModal()">✕</button>
+      </div>
 
-  <script src="script.js"></script>
+      <form class="modal-form" action="/admin/usuario/editar" method="POST">
+        <input type="hidden" id="edit_id" name="id_usuario">
+        
+        <div id="formFields">
+          <input type="text" id="edit_nome" name="nome" placeholder="Nome Completo" required>
+          <input type="email" id="edit_email" name="email" placeholder="E-mail" required>
+          <input type="text" id="edit_cpf" name="cpf" placeholder="CPF (Apenas números)" maxlength="14" required>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="ghost-btn" onclick="closeEditModal()">Cancelar</button>
+          <button type="submit" class="primary-btn">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+ <script src="/static/script.js"></script>
 </body>
 </html>
