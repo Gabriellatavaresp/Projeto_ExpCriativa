@@ -58,16 +58,16 @@
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          Search
+          Pesquisar
         </a>
       </nav>
 
       <div class="sidebar-divider"></div>
 
-      <!-- Library panel -->
+      <!-- Painel da bibioteca -->
       <div class="library-panel">
         <div class="lib-header">
-          <span class="lib-title">Your Library</span>
+          <span class="lib-title">Sua biblioteca</span>
           <div class="lib-actions">
             <button class="icon-btn" title="View options">
               <svg viewBox="0 0 24 24">
@@ -88,20 +88,20 @@
           </div>
         </div>
 
-        <!-- Filter pills -->
+        <!-- Botoes de filtro de itens -->
         <div class="filter-pills">
-          <button class="pill active" data-filter="all">All</button>
+          <button class="pill active" data-filter="all">Tudo</button>
           <button class="pill" data-filter="playlist">Playlists</button>
-          <button class="pill" data-filter="album">Albums</button>
+          <button class="pill" data-filter="album">Albuns</button>
         </div>
 
-        <!-- Search -->
+        <!-- Pesquisa -->
         <div class="search-bar">
           <svg viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          <input id="sidebarSearch" type="text" placeholder="Search in library" oninput="filterAll()" />
+          <input id="sidebarSearch" type="text" placeholder="Pesquisar na biblioteca" oninput="filterAll()" />
           <button class="search-close" onclick="clearSearch()">
             <svg viewBox="0 0 24 24">
               <line x1="18" y1="6" x2="6" y2="18" />
@@ -110,11 +110,11 @@
           </button>
         </div>
 
-        <!-- Sort -->
+        <!-- Ordenaçao -->
         <div class="sort-row">
           <span class="sort-label" id="countLabel">8 playlists</span>
           <button class="sort-btn" onclick="toggleSort()">
-            <span id="sortLabel">Recently added</span>
+            <span id="sortLabel">Adicionadas recentemente</span>
             <svg viewBox="0 0 24 24">
               <line x1="3" y1="6" x2="21" y2="6" />
               <line x1="6" y1="12" x2="18" y2="12" />
@@ -123,31 +123,28 @@
           </button>
         </div>
 
-        <!-- Playlist list -->
-        <div class="playlist-list" id="sidebarList">
-          <!-- Injected by JS -->
-        </div>
-
+        <!-- Lista de playlist -->
+        <div class="playlist-list" id="sidebarList"></div>
         <div class="empty-state" id="sidebarEmpty">
           <svg viewBox="0 0 24 24">
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          <p>No results found</p>
+          <p>Nenhum resultado encontrado.</p>
         </div>
       </div>
     </aside>
 
-    <!-- ── Main content ─────────────────────────────────────── -->
+    <!-- ── Conteúdo principal ─────────────────────────────────────── -->
     <main class="main">
       <div class="main-header">
-        <h1 class="main-title">Your <span>Library</span></h1>
+        <h1 class="main-title">Sua <span>Biblioteca</span></h1>
         <button class="new-playlist-btn" onclick="openModal()">
           <svg viewBox="0 0 24 24">
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-          New Playlist
+          Nova Playlist
         </button>
       </div>
 
@@ -158,43 +155,43 @@
             <circle cx="11" cy="11" r="8" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          <h3>No results</h3>
-          <p>Try a different search term or filter.</p>
+          <h3>Sem resultados.</h3>
+          <p>Tente um termo de busca ou filtro diferente.</p>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- ── Create Playlist Modal ────────────────────────────── -->
+  <!-- ── Criar Playlist ────────────────────────────── -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
-      <h2 class="modal-title">Create Playlist</h2>
+      <h2 class="modal-title">Criar Playlist</h2>
 
       <div class="cover-picker">
-        <div class="cover-preview" id="coverPreview" title="Choose cover color">
+        <div class="cover-preview" id="coverPreview" title="Escolha a cor da capa">
           <img id="coverImg" src="" alt="cover" />
           <svg viewBox="0 0 24 24">
             <rect x="3" y="3" width="18" height="18" rx="2" />
             <circle cx="8.5" cy="8.5" r="1.5" />
             <polyline points="21 15 16 10 5 21" />
           </svg>
-          <span>Add cover</span>
+          <span>Adicionar capa</span>
         </div>
         <div class="color-swatches" id="swatches"></div>
       </div>
 
       <div class="modal-field">
-        <label for="plName">Playlist name</label>
-        <input id="plName" type="text" placeholder="My Playlist #9" maxlength="60" />
+        <label for="plName">Nome da Playlist</label>
+        <input id="plName" type="text" placeholder="Minha Playlist #9" maxlength="60" />
       </div>
       <div class="modal-field">
-        <label for="plDesc">Description <span style="color:var(--text-faint);font-weight:400">(optional)</span></label>
-        <textarea id="plDesc" rows="2" placeholder="Add an optional description…"></textarea>
+        <label for="plDesc">Descrição <span style="color:var(--text-faint);font-weight:400">(opcional)</span></label>
+        <textarea id="plDesc" rows="2" placeholder="Adicione uma descição da sua playlist…"></textarea>
       </div>
 
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-        <button class="btn-create" onclick="createPlaylist()">Create</button>
+        <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+        <button class="btn-create" onclick="createPlaylist()">Criar</button>
       </div>
     </div>
   </div>
@@ -204,325 +201,10 @@
     <svg viewBox="0 0 24 24">
       <polyline points="20 6 9 17 4 12" />
     </svg>
-    <span id="toastMsg">Playlist created!</span>
+    <span id="toastMsg">Playlist criada!</span>
   </div>
 
-  <script>
-    /* ═══════════════════════════════════════════════════════════
-       DATA
-    ═══════════════════════════════════════════════════════════ */
-    const PLAYLISTS = [
-      {
-        id: 1,
-        name: 'Late Night Drives',
-        tracks: 24,
-        type: 'playlist',
-        active: true,
-        img: 'https://images.unsplash.com/photo-1693642872628-75069317e1c8?w=300&q=80'
-      },
-      {
-        id: 2,
-        name: 'Deep Focus',
-        tracks: 38,
-        type: 'playlist',
-        active: false,
-        img: 'https://images.unsplash.com/photo-1771301455501-694654813e1a?w=300&q=80'
-      },
-      {
-        id: 3,
-        name: 'Synthwave Nights',
-        tracks: 17,
-        type: 'playlist',
-        active: false,
-        img: 'https://images.unsplash.com/photo-1579353174740-9e4e39428d6f?w=300&q=80'
-      },
-      {
-        id: 4,
-        name: 'Forest Ambient',
-        tracks: 12,
-        type: 'album',
-        active: false,
-        img: 'https://images.unsplash.com/photo-1716017052766-e9bea115aa2b?w=300&q=80'
-      },
-      {
-        id: 5,
-        name: 'Jazz & Vinyl',
-        tracks: 31,
-        type: 'playlist',
-        active: false,
-        img: 'https://images.unsplash.com/photo-1706636879563-8ee9bbf720ec?w=300&q=80'
-      },
-      {
-        id: 6,
-        name: 'Electric Dreams',
-        tracks: 20,
-        type: 'album',
-        active: false,
-        img: 'https://images.unsplash.com/photo-1721004065734-2514c93ba77a?w=300&q=80'
-      },
-      {
-        id: 7,
-        name: 'Acoustic Sessions',
-        tracks: 9,
-        type: 'playlist',
-        active: false,
-        img: 'https://images.unsplash.com/photo-1670270837762-9b6bae6a9761?w=300&q=80'
-      },
-      {
-        id: 8,
-        name: 'Geometric Vibes',
-        tracks: 15,
-        type: 'playlist',
-        active: false,
-        img: 'https://images.unsplash.com/photo-1748186673798-5385404fbb14?w=300&q=80'
-      },
-    ];
-
-    const COLORS = [
-      { label: 'Mint', value: '#8ab8a8' },
-      { label: 'Teal', value: '#6b9997' },
-      { label: 'Dark Teal', value: '#54787d' },
-      { label: 'Sage', value: '#c6cca5' },
-      { label: 'Brown', value: '#615145' },
-      { label: 'Slate', value: '#3d4f52' },
-    ];
-
-    let playlists = [...PLAYLISTS];
-    let activeId = 1;
-    let activeFilter = 'all';
-    let searchQuery = '';
-    let selectedColor = COLORS[0].value;
-    let sortAsc = false;
-
-    /* ═══════════════════════════════════════════════════════════
-       RENDER
-    ═══════════════════════════════════════════════════════════ */
-    function filtered() {
-      return playlists.filter(p => {
-        const matchFilter = activeFilter === 'all' || p.type === activeFilter;
-        const q = searchQuery.toLowerCase();
-        const matchSearch = !q || p.name.toLowerCase().includes(q);
-        return matchFilter && matchSearch;
-      });
-    }
-
-    function renderSidebar() {
-      const list = document.getElementById('sidebarList');
-      const empty = document.getElementById('sidebarEmpty');
-      const count = document.getElementById('countLabel');
-      const items = filtered();
-
-      count.textContent = items.length + (items.length === 1 ? ' playlist' : ' playlists');
-
-      list.innerHTML = items.map(p => `
-        <button
-          class="playlist-item ${p.id === activeId ? 'active' : ''}"
-          onclick="window.location='playlist.html?id=${p.id}'"
-        >
-          ${p.img
-          ? `<img class="pl-cover" src="${p.img}&w=80" alt="${p.name}" loading="lazy" />`
-          : `<div class="pl-cover-placeholder">
-                <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-               </div>`
-        }
-          <div class="pl-info">
-            <div class="pl-name">${escHtml(p.name)}</div>
-            <div class="pl-meta">${capitalize(p.type)} · ${p.tracks} tracks</div>
-          </div>
-          <div class="pl-playing">
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-          </div>
-        </button>
-      `).join('');
-
-      empty.style.display = items.length === 0 ? 'flex' : 'none';
-    }
-
-    function renderGrid() {
-      const grid = document.getElementById('mainGrid');
-      const empty = document.getElementById('gridEmpty');
-      const items = filtered();
-
-      // remove old cards (keep the empty state node)
-      [...grid.querySelectorAll('.card')].forEach(c => c.remove());
-
-      items.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <div class="card-img-wrap">
-            ${p.img
-            ? `<img class="card-img" src="${p.img}&w=400" alt="${escHtml(p.name)}" loading="lazy" />`
-            : `<div class="card-img-placeholder">
-                  <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                 </div>`
-          }
-            <div class="play-overlay">
-              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            </div>
-          </div>
-          <div class="card-name">${escHtml(p.name)}</div>
-          <div class="card-meta">${capitalize(p.type)} · ${p.tracks} tracks</div>
-        `;
-        card.onclick = () => window.location = 'playlist.html?id=' + p.id;
-        grid.insertBefore(card, empty);
-      });
-
-      empty.style.display = items.length === 0 ? 'flex' : 'none';
-    }
-
-    function render() {
-      renderSidebar();
-      renderGrid();
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       INTERACTIONS
-    ═══════════════════════════════════════════════════════════ */
-    function setActive(id) {
-      activeId = id;
-      render();
-    }
-
-    function filterAll() {
-      searchQuery = document.getElementById('sidebarSearch').value;
-      render();
-    }
-
-    function clearSearch() {
-      document.getElementById('sidebarSearch').value = '';
-      searchQuery = '';
-      render();
-    }
-
-    // Filter pills
-    document.querySelectorAll('.pill').forEach(btn => {
-      btn.addEventListener('click', () => {
-        activeFilter = btn.dataset.filter;
-        document.querySelectorAll('.pill').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        render();
-      });
-    });
-
-    // Sort toggle
-    const SORTS = ['Recently added', 'Alphabetical', 'Recently played'];
-    let sortIdx = 0;
-    function toggleSort() {
-      sortIdx = (sortIdx + 1) % SORTS.length;
-      document.getElementById('sortLabel').textContent = SORTS[sortIdx];
-      if (sortIdx === 1) {
-        playlists.sort((a, b) => a.name.localeCompare(b.name));
-      } else {
-        playlists = [...PLAYLISTS, ...playlists.filter(p => !PLAYLISTS.find(o => o.id === p.id))];
-      }
-      render();
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       MODAL
-    ═══════════════════════════════════════════════════════════ */
-    function openModal() {
-      document.getElementById('modalOverlay').classList.add('open');
-      document.getElementById('plName').focus();
-    }
-    function closeModal() {
-      document.getElementById('modalOverlay').classList.remove('open');
-      document.getElementById('plName').value = '';
-      document.getElementById('plDesc').value = '';
-      resetCoverPreview();
-    }
-
-    // Close on backdrop click
-    document.getElementById('modalOverlay').addEventListener('click', function (e) {
-      if (e.target === this) closeModal();
-    });
-
-    // Close on Escape
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-    function createPlaylist() {
-      const name = document.getElementById('plName').value.trim();
-      if (!name) {
-        document.getElementById('plName').focus();
-        document.getElementById('plName').style.borderColor = 'rgba(239,68,68,0.5)';
-        setTimeout(() => document.getElementById('plName').style.borderColor = '', 1000);
-        return;
-      }
-      const newPl = {
-        id: Date.now(),
-        name,
-        tracks: 0,
-        type: 'playlist',
-        active: false,
-        img: null,
-        color: selectedColor
-      };
-      playlists.unshift(newPl);
-      activeId = newPl.id;
-      closeModal();
-      render();
-      showToast(`"${name}" created!`);
-    }
-
-    /* ─── Color swatches ─── */
-    const swatchContainer = document.getElementById('swatches');
-    COLORS.forEach((c, i) => {
-      const s = document.createElement('div');
-      s.className = 'swatch' + (i === 0 ? ' selected' : '');
-      s.style.background = c.value;
-      s.title = c.label;
-      s.onclick = () => {
-        selectedColor = c.value;
-        document.querySelectorAll('.swatch').forEach(el => el.classList.remove('selected'));
-        s.classList.add('selected');
-        updateCoverPreview();
-      };
-      swatchContainer.appendChild(s);
-    });
-
-    function updateCoverPreview() {
-      const preview = document.getElementById('coverPreview');
-      preview.style.background = `linear-gradient(135deg, ${selectedColor}33, ${selectedColor}55)`;
-      preview.style.borderColor = selectedColor + '88';
-    }
-
-    function resetCoverPreview() {
-      const preview = document.getElementById('coverPreview');
-      preview.style.background = '';
-      preview.style.borderColor = '';
-      selectedColor = COLORS[0].value;
-      document.querySelectorAll('.swatch').forEach((el, i) => {
-        el.classList.toggle('selected', i === 0);
-      });
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       TOAST
-    ═══════════════════════════════════════════════════════════ */
-    let toastTimer;
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      document.getElementById('toastMsg').textContent = msg;
-      t.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       UTILS
-    ═══════════════════════════════════════════════════════════ */
-    function escHtml(str) {
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-    function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-    /* ═══════════════════════════════════════════════════════════
-       INIT
-    ═══════════════════════════════════════════════════════════ */
-    render();
-    updateCoverPreview();
-  </script>
+  <script src="../static/js/biblioteca.js"></script>
 </body>
 
 </html>
