@@ -1,4 +1,4 @@
-    // mascara CPF
+// mascara CPF
     const cpfInput = document.getElementById('cpf');
 
     cpfInput.addEventListener('input', function () {
@@ -37,6 +37,21 @@
       }
     }
 
+    // valida CPF pelos dígitos verificadores
+    function isValidCPF(cpf) {
+      if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+      let sum = 0;
+      for (let i = 0; i < 9; i++) sum += parseInt(cpf[i]) * (10 - i);
+      let first = (sum * 10) % 11;
+      if (first === 10 || first === 11) first = 0;
+      if (first !== parseInt(cpf[9])) return false;
+      sum = 0;
+      for (let i = 0; i < 10; i++) sum += parseInt(cpf[i]) * (11 - i);
+      let second = (sum * 10) % 11;
+      if (second === 10 || second === 11) second = 0;
+      return second === parseInt(cpf[10]);
+    }
+
     // limpa o erro ao digitar
     ['name','cpf','email','username','password','confirmPassword'].forEach(id => {
       document.getElementById(id).addEventListener('input', () => {
@@ -60,7 +75,7 @@
       if (!name) {
         setError('name', 'nameError', true); valid = false;
       }
-      if (cpf.length !== 11) {
+      if (!isValidCPF(cpf)) {
         setError('cpf', 'cpfError', true); valid = false;
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -81,7 +96,6 @@
       }
 
       if (valid) {
-        // redireciona para a landing page ao logar
         window.location.href = '/';
       }
     });
