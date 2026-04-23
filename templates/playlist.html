@@ -29,7 +29,6 @@
 
   <div class="app">
 
-    <!-- ════════════════════ SIDEBAR ═════════════════════════ -->
     <aside class="sidebar">
       <a class="sidebar-logo" href="homepage.html">
         <div class="logo-ring">
@@ -45,7 +44,7 @@
         </a>
         <button class="nav-btn">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Search
+          Buscar
         </button>
       </nav>
 
@@ -53,7 +52,7 @@
 
       <div class="lib-panel">
         <div class="lib-head">
-          <span class="lib-label">Your Library</span>
+          <span class="lib-label">Sua Biblioteca</span>
           <button class="add-btn" title="Create playlist" onclick="openEditModal()">
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           </button>
@@ -62,15 +61,15 @@
       </div>
     </aside>
 
-    <!-- ════════════════ MAIN WRAP ═══════════════════════════ -->
+
     <div class="main-wrap">
       <div class="scroll-area" id="scrollArea">
 
-        <!-- Back bar -->
+        
         <div class="back-bar" id="backBar">
           <a class="back-link" href="biblioteca.html">
             <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-            Your Library
+            Sua biblioteca
           </a>
           <span class="bar-title" id="barTitle"></span>
           <div class="bar-actions">
@@ -80,7 +79,7 @@
           </div>
         </div>
 
-        <!-- Hero -->
+      
         <div class="hero" id="hero">
           <div class="hero-bg" id="heroBg"></div>
           <div class="hero-content">
@@ -119,7 +118,7 @@
           </div>
         </div>
 
-        <!-- Songs section -->
+        
         <div class="song-section">
           <div class="song-filter-bar">
             <div class="song-search">
@@ -140,9 +139,9 @@
               <tr>
                 <th class="c-drag"></th>
                 <th class="c-num" onclick="sortBy('num')"># <span class="sort-arrow" id="sa-num"></span></th>
-                <th class="c-title" onclick="sortBy('title')">Title <span class="sort-arrow" id="sa-title"></span></th>
+                <th class="c-title" onclick="sortBy('title')">Titulo <span class="sort-arrow" id="sa-title"></span></th>
                 <th class="c-album" onclick="sortBy('album')">Album <span class="sort-arrow" id="sa-album"></span></th>
-                <th class="c-date" onclick="sortBy('date')">Date Added <span class="sort-arrow" id="sa-date"></span></th>
+                <th class="c-date" onclick="sortBy('date')">Data adicionado <span class="sort-arrow" id="sa-date"></span></th>
                 <th class="c-like">
                   <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;display:inline-block;vertical-align:middle"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 </th>
@@ -158,13 +157,13 @@
 
           <div class="no-songs" id="noSongs" style="display:none">
             <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            No songs match your search.
+            Nenhuma música encontrada.
           </div>
 
-          <!-- Add Songs -->
+          
           <div class="add-songs-area" id="addSongsArea">
-            <div class="add-songs-title">Add songs to this playlist</div>
-            <div class="add-songs-sub">Find something to listen to.</div>
+            <div class="add-songs-title">Adicionar músicas nessa playlist</div>
+            <div class="add-songs-sub">Encontre algo para escutar</div>
             <div class="rec-search">
               <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <input id="recSearchInput" type="text" placeholder="Search for songs to add…" oninput="filterPool()" />
@@ -173,9 +172,9 @@
           </div>
         </div>
 
-      </div><!-- /scroll-area -->
+      </div>
 
-      <!-- ════ NOW PLAYING BAR ════════════════════════════════ -->
+      
       <div class="now-playing-bar">
         <div class="np-left">
           <img class="np-art" id="npArt" src="" alt="" />
@@ -216,36 +215,36 @@
 
   <div class="ctx-menu" id="ctxMenu">
     <div class="ctx-item" id="ctxPlay" onclick="ctxAction('play')">
-      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play
+      <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg> Reproduzir
     </div>
     <div class="ctx-item" onclick="ctxAction('next')">
-      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> Add to queue
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg> Adicionar a fila
     </div>
     <div class="ctx-sep"></div>
     <div class="ctx-item" onclick="ctxAction('like')">
-      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Save to Liked Songs
+      <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Salvar em Curtidas
     </div>
     <div class="ctx-sep"></div>
     <div class="ctx-item danger" onclick="ctxAction('remove')">
-      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg> Remove from playlist
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg> Remover da playlist
     </div>
   </div>
 
-  <!-- Playlist options context -->
+  
   <div class="ctx-menu pl-ctx-menu" id="plCtxMenu">
-    <div class="ctx-item" onclick="openEditModal();closePlCtx()"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Edit playlist</div>
-    <div class="ctx-item" onclick="openAddModal();closePlCtx()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add songs</div>
+    <div class="ctx-item" onclick="openEditModal();closePlCtx()"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg> Editar playlist</div>
+    <div class="ctx-item" onclick="openAddModal();closePlCtx()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Adicionar Música</div>
     <div class="ctx-sep"></div>
-    <div class="ctx-item" onclick="toggleLikePlaylist();closePlCtx()"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Save to library</div>
-    <div class="ctx-item" onclick="copyLink();closePlCtx()"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copy link</div>
+    <div class="ctx-item" onclick="toggleLikePlaylist();closePlCtx()"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg> Salvar na biblioteca</div>
+    <div class="ctx-item" onclick="copyLink();closePlCtx()"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copiar link</div>
     <div class="ctx-sep"></div>
-    <div class="ctx-item danger" onclick="openDeleteModal();closePlCtx()"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete playlist</div>
+    <div class="ctx-item danger" onclick="openDeleteModal();closePlCtx()"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg> Deletar playlist</div>
   </div>
 
-  <!-- ══════════════════ EDIT MODAL ════════════════════════════ -->
+  
   <div class="modal-overlay" id="editModal">
     <div class="modal">
-      <h2 class="modal-title">Edit Playlist</h2>
+      <h2 class="modal-title">Editar Playlist</h2>
       <div class="edit-cover-row">
         <div class="edit-cover-preview" id="editCoverPreview">
           <div class="no-img">
@@ -253,12 +252,12 @@
           </div>
         </div>
         <div class="color-picker-wrap">
-          <div class="cpick-label">Choose a color theme</div>
+          <div class="cpick-label">Escolher cor de tema</div>
           <div class="swatches" id="editSwatches"></div>
         </div>
       </div>
       <div class="modal-field">
-        <label>Playlist name</label>
+        <label>Nome playlist</label>
         <input id="editNameInput" type="text" placeholder="My Playlist" maxlength="60" />
       </div>
       <div class="modal-field">
@@ -266,50 +265,48 @@
         <textarea id="editDescInput" rows="2" placeholder="Give your playlist a description…"></textarea>
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeEditModal()">Cancel</button>
-        <button class="btn-save" onclick="saveEdit()">Save changes</button>
+        <button class="btn-cancel" onclick="closeEditModal()">Cancelar</button>
+        <button class="btn-save" onclick="saveEdit()">Salvar alterações</button>
       </div>
     </div>
   </div>
 
-  <!-- ══════════════════ ADD SONGS MODAL ══════════════════════ -->
+
   <div class="modal-overlay" id="addModal">
     <div class="modal add-modal">
-      <h2 class="modal-title">Add Songs</h2>
+      <h2 class="modal-title">Adiconar Músicas</h2>
       <div class="add-modal-search">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input id="addModalSearch" type="text" placeholder="Search songs, artists…" oninput="filterAddModal()" />
       </div>
       <div class="add-modal-list" id="addModalList"></div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeAddModal()">Done</button>
+        <button class="btn-cancel" onclick="closeAddModal()">Feito</button>
       </div>
     </div>
   </div>
 
-  <!-- ══════════════════ DELETE MODAL ════════════════════════ -->
+  
   <div class="modal-overlay" id="deleteModal">
     <div class="modal del-modal">
       <h2 class="modal-title">Delete playlist?</h2>
-      <p class="del-msg">This will permanently delete <span class="del-name" id="delName"></span>. This action cannot be undone.</p>
+      <p class="del-msg">This will permanently delete <span class="del-name" id="delName"></span>. Essa ação não pode ser feita.</p>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
-        <button class="btn-delete" onclick="confirmDelete()">Delete</button>
+        <button class="btn-cancel" onclick="closeDeleteModal()">Cancelar</button>
+        <button class="btn-delete" onclick="confirmDelete()">Deletar</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast -->
+
   <div class="toast" id="toast">
     <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-    <span id="toastMsg">Done!</span>
+    <span id="toastMsg">Feito!</span>
   </div>
 
-  <!-- ════════════════════ SCRIPT ════════════════════════════ -->
+ 
   <script>
-  /* ═══════════════════════════════════════════════════════════
-     IMAGE URLS
-  ═══════════════════════════════════════════════════════════ */
+
   const IMG = {
     neon:     'https://images.unsplash.com/photo-1530394167726-8b410f899685?w=120&q=80',
     synth:    'https://images.unsplash.com/photo-1648229168049-5525383e80dc?w=120&q=80',
@@ -331,9 +328,7 @@
     lofi:     'https://images.unsplash.com/photo-1693642872628-75069317e1c8?w=120&q=80',
   };
 
-  /* ═══════════════════════════════════════════════════════════
-     THEME COLORS
-  ═══════════════════════════════════════════════════════════ */
+ 
   const COLORS = [
     { label:'Mint',      value:'#6b9997' },
     { label:'Sage',      value:'#8a9e7a' },
@@ -345,9 +340,7 @@
     { label:'Plum',      value:'#7a5070' },
   ];
 
-  /* ═══════════════════════════════════════════════════════════
-     DATA — ALL SONGS
-  ═══════════════════════════════════════════════════════════ */
+  
   const ALL_SONGS = [
     { id:1,  title:'Neon Pulse',     artist:'Midnight Echo',   album:'Neon Pulse EP',   img:IMG.neon,     dur:222, added:'2025-11-03' },
     { id:2,  title:'Glass City',     artist:'Dusk Protocol',   album:'Frequencies',     img:IMG.fluid,    dur:255, added:'2025-11-03' },
@@ -371,9 +364,7 @@
     { id:20, title:'Parallel',       artist:'Solar Winds',     album:'Retrograde',      img:IMG.synth2,   dur:235, added:'2025-12-20' },
   ];
 
-  /* ═══════════════════════════════════════════════════════════
-     DATA — PLAYLISTS
-  ═══════════════════════════════════════════════════════════ */
+ 
   const PLAYLISTS = [
     { id:1, name:'Late Night Drives', desc:'For those long drives under city lights.', cover:IMG.lofi,    color:'#5a8884', type:'playlist', songIds:[1,2,3,4,5,6,7,8,9,10,11,12] },
     { id:2, name:'Deep Focus',        desc:'Concentration and clarity.',               cover:IMG.abstract, color:'#4a5a6a', type:'playlist', songIds:[3,5,9,11,13,15,20] },
@@ -385,12 +376,10 @@
     { id:8, name:'Geometric Vibes',   desc:'Angular sounds and patterns.',             cover:IMG.geo,      color:'#507060', type:'playlist', songIds:[2,6,9,11,15,20] },
   ];
 
-  /* ═══════════════════════════════════════════════════════════
-     STATE
-  ═══════════════════════════════════════════════════════════ */
+
   let activePlId  = getUrlParam() || 1;
   let activePl    = null;
-  let songs       = [];     // current playlist songs (ordered)
+  let songs       = [];     
   let playingId   = null;
   let npPlaying   = false;
   let likedIds    = new Set([2,5,8,11]);
@@ -411,9 +400,7 @@
     return p ? parseInt(p) : null;
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     HELPERS
-  ═══════════════════════════════════════════════════════════ */
+  
   function fmt(secs) {
     const m = Math.floor(secs/60), s = secs%60;
     return `${m}:${s.toString().padStart(2,'0')}`;
@@ -434,9 +421,7 @@
     return ALL_SONGS.filter(s => !pl.songIds.includes(s.id));
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     LOAD PLAYLIST
-  ═══════════════════════════════════════════════════════════ */
+
   function loadPlaylist(id) {
     activePlId = id;
     activePl   = JSON.parse(JSON.stringify(PLAYLISTS.find(p=>p.id===id) || PLAYLISTS[0]));
@@ -451,9 +436,7 @@
     renderAll();
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     RENDER ALL
-  ═══════════════════════════════════════════════════════════ */
+ 
   function renderAll() {
     renderSidebar();
     renderHero();
@@ -462,7 +445,6 @@
     renderNowPlaying();
   }
 
-  /* ── Sidebar ─────────────────────────────────────────────── */
   function renderSidebar() {
     const list = document.getElementById('sidebarList');
     list.innerHTML = PLAYLISTS.map(pl=>`
@@ -477,7 +459,7 @@
     `).join('');
   }
 
-  /* ── Hero ────────────────────────────────────────────────── */
+  
   function renderHero() {
     const pl = activePl;
     document.title = `Aurora — ${pl.name}`;
@@ -494,23 +476,23 @@
     document.getElementById('heroMeta').innerHTML =
       `<strong>You</strong><span class="dot">·</span>${totalTracks} song${totalTracks!==1?'s':''}<span class="dot">·</span>${dur}`;
 
-    // hero gradient
+   
     document.getElementById('heroBg').style.background =
       `linear-gradient(to bottom, ${pl.color}88 0%, var(--bg) 100%)`;
 
-    // like btn
+    
     const lb = document.getElementById('likePlaylistBtn');
     lb.classList.toggle('liked', likedPls.has(pl.id));
 
-    // shuffle
+    
     document.getElementById('shuffleBtn').classList.toggle('active', shuffleOn);
   }
 
-  /* ── Song Table ──────────────────────────────────────────── */
+
   function renderSongs() {
     let list = [...songs];
 
-    // filter
+    
     if (songFilter) {
       const q = songFilter.toLowerCase();
       list = list.filter(s=>
@@ -520,7 +502,7 @@
       );
     }
 
-    // sort
+    
     if (sortCol) {
       list.sort((a,b)=>{
         let va,vb;
@@ -600,7 +582,7 @@
       }).join('');
     }
 
-    // sort arrows
+    
     ['num','title','album','date','duration'].forEach(c=>{
       const el = document.getElementById(`sa-${c}`);
       if (el) el.textContent = sortCol===c ? (sortDir==='asc'?'↑':'↓') : '';
@@ -614,7 +596,6 @@
     }
   }
 
-  /* ── Pool (add songs area at bottom) ─────────────────────── */
   function renderPool() {
     const pool = poolFor(activePl).filter(s=>{
       if (!poolFilter) return true;
@@ -638,7 +619,7 @@
     `).join('');
   }
 
-  /* ── Now Playing Bar ─────────────────────────────────────── */
+
   function renderNowPlaying() {
     const song = ALL_SONGS.find(s=>s.id===playingId);
     const art    = document.getElementById('npArt');
@@ -686,9 +667,7 @@
     }
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     PLAYBACK
-  ═══════════════════════════════════════════════════════════ */
+ 
   function playSong(id) {
     if (playingId===id) {
       npPlaying = !npPlaying;
@@ -772,9 +751,7 @@
     toggleLike(playingId);
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     LIKE
-  ═══════════════════════════════════════════════════════════ */
+
   function toggleLike(id) {
     const had = likedIds.has(id);
     had ? likedIds.delete(id) : likedIds.add(id);
@@ -790,9 +767,7 @@
     toast(had?'Removed from library':'Saved to library');
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     SORT & FILTER
-  ═══════════════════════════════════════════════════════════ */
+
   function sortBy(col) {
     if (sortCol===col) sortDir = sortDir==='asc'?'desc':'asc';
     else { sortCol=col; sortDir='asc'; }
@@ -813,12 +788,9 @@
     renderAddModal();
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     ADD / REMOVE SONGS
-  ═══════════════════════════════════════════════════════════ */
   function addSongFromPool(id, btn) {
     if (activePl.songIds.includes(id)) return;
-    // update the source playlist
+    
     const pl = PLAYLISTS.find(p=>p.id===activePl.id);
     if (pl) pl.songIds.push(id);
     activePl.songIds.push(id);
@@ -832,7 +804,7 @@
   }
 
   function removeSong(id) {
-    // update source
+    
     const pl = PLAYLISTS.find(p=>p.id===activePl.id);
     if (pl) pl.songIds = pl.songIds.filter(sid=>sid!==id);
     activePl.songIds = activePl.songIds.filter(sid=>sid!==id);
@@ -845,9 +817,6 @@
     renderNowPlaying();
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     INLINE EDIT (name & description in hero)
-  ═══════════════════════════════════════════════════════════ */
   function startEditName() {
     const n = document.getElementById('heroName');
     const inp = document.getElementById('heroNameInput');
@@ -905,9 +874,7 @@
     if (e.key==='Escape') document.getElementById('heroDescInput').blur();
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     DRAG & DROP REORDER
-  ═══════════════════════════════════════════════════════════ */
+
   function dragStart(e,idx) {
     draggedIdx=idx;
     e.dataTransfer.effectAllowed='move';
@@ -931,7 +898,7 @@
     if (draggedIdx===null||draggedIdx===targetIdx) return;
     const moved = songs.splice(draggedIdx,1)[0];
     songs.splice(targetIdx,0,moved);
-    // update songIds
+   
     activePl.songIds = songs.map(s=>s.id);
     const pl=PLAYLISTS.find(p=>p.id===activePl.id);
     if(pl) pl.songIds=[...activePl.songIds];
@@ -946,9 +913,7 @@
     draggedIdx=null;
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     CONTEXT MENU (song)
-  ═══════════════════════════════════════════════════════════ */
+
   function openCtxMenu(e,id) {
     e.stopPropagation();
     ctxSongId=id;
@@ -974,7 +939,7 @@
     closeCtxMenu();
   }
 
-  /* Playlist level context */
+
   function openPlaylistCtx(e) {
     e.stopPropagation();
     const menu=document.getElementById('plCtxMenu');
@@ -994,9 +959,7 @@
     toast('Link copied!');
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     EDIT MODAL
-  ═══════════════════════════════════════════════════════════ */
+ 
   function openEditModal() {
     document.getElementById('editNameInput').value = activePl.name;
     document.getElementById('editDescInput').value = activePl.desc||'';
@@ -1029,7 +992,7 @@
   }
 
   function rgbMatch(rgb,hex) {
-    // simple check – enough for our use
+    
     return rgb===hex;
   }
 
@@ -1054,9 +1017,7 @@
     renderSidebar();
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     ADD SONGS MODAL
-  ═══════════════════════════════════════════════════════════ */
+
   function openAddModal() {
     document.getElementById('addModalSearch').value='';
     renderAddModal();
@@ -1104,9 +1065,7 @@
     renderSongs();
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     DELETE MODAL
-  ═══════════════════════════════════════════════════════════ */
+  
   function openDeleteModal() {
     document.getElementById('delName').textContent=`"${activePl.name}"`;
     document.getElementById('deleteModal').classList.add('open');
@@ -1122,9 +1081,7 @@
     setTimeout(()=>window.location.href='biblioteca.html',800);
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     TOAST
-  ═══════════════════════════════════════════════════════════ */
+
   let toastTimer2;
   function toast(msg) {
     const t=document.getElementById('toast');
@@ -1134,17 +1091,12 @@
     toastTimer2=setTimeout(()=>t.classList.remove('show'),2600);
   }
 
-  /* ═══════════════════════════════════════════════════════════
-     SCROLL → BACK BAR
-  ═══════════════════════════════════════════════════════════ */
   document.getElementById('scrollArea').addEventListener('scroll',function(){
     const bar=document.getElementById('backBar');
     bar.classList.toggle('scrolled',this.scrollTop>160);
   });
 
-  /* ═══════════════════════════════════════════════════════════
-     GLOBAL CLICK → CLOSE MENUS
-  ═══════════════════════════════════════════════════════════ */
+  
   document.addEventListener('click',()=>{ closeCtxMenu(); closePlCtx(); });
   document.addEventListener('keydown',e=>{
     if(e.key==='Escape'){
@@ -1156,9 +1108,7 @@
   document.getElementById('addModal').addEventListener('click',function(e){if(e.target===this)closeAddModal();});
   document.getElementById('deleteModal').addEventListener('click',function(e){if(e.target===this)closeDeleteModal();});
 
-  /* ═══════════════════════════════════════════════════════════
-     INIT
-  ═══════════════════════════════════════════════════════════ */
+
   loadPlaylist(activePlId);
   </script>
 

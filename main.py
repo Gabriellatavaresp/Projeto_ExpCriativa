@@ -12,7 +12,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 app = FastAPI(title="Aurora Streaming API")
 
-# Configura as pastas do projeto
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -30,13 +30,13 @@ def serialize_row(row):
         if isinstance(v, (date, datetime)):
             out[k] = v.isoformat()
         elif isinstance(v, time):
-            out[k] = str(v)[:5]  # "HH:MM"
+            out[k] = str(v)[:5]  
         elif isinstance(v, timedelta):
             total = int(v.total_seconds())
             h, m, s = total // 3600, (total % 3600) // 60, total % 60
             out[k] = f"{m}:{s:02d}" if h == 0 else f"{h}:{m:02d}:{s:02d}"
         elif isinstance(v, bytes):
-            out[k] = None  # LONGBLOB → ignorar
+            out[k] = None  
         else:
             out[k] = v
     return out
@@ -46,9 +46,7 @@ def serialize_list(rows):
     return [serialize_row(r) for r in rows]
 
 
-# ══════════════════════════════════════════════
-# PÁGINAS HTML
-# ══════════════════════════════════════════════
+
 
 @app.get("/", response_class=HTMLResponse)
 async def landing(request: Request):
@@ -79,14 +77,12 @@ async def admin_page(request: Request):
     return templates.TemplateResponse(request=request, name="admin.html")
 
 
-# ══════════════════════════════════════════════
-# AUTH
-# ══════════════════════════════════════════════
+
 
 @app.post("/api/login")
 async def api_login(body: dict = Body(...), db=Depends(get_db)):
     email = body.get("email", "")
-    senha_digitada = body.get("senha", "") # A senha que o usuário acabou de digitar
+    senha_digitada = body.get("senha", "") 
     if not email or not senha_digitada:
         raise HTTPException(400, detail="Email e senha são obrigatórios")
     with db.cursor() as cur:
@@ -124,9 +120,7 @@ async def api_cadastro(body: dict = Body(...), db=Depends(get_db)):
         raise HTTPException(409, detail=str(e))
 
 
-# ══════════════════════════════════════════════
-# ARTISTAS
-# ══════════════════════════════════════════════
+
 
 @app.get("/api/artistas")
 async def listar_artistas(db=Depends(get_db)):
@@ -196,9 +190,6 @@ async def excluir_artista(id: int, db=Depends(get_db)):
     return ok({"message": "Artista excluído"})
 
 
-# ══════════════════════════════════════════════
-# ÁLBUNS
-# ══════════════════════════════════════════════
 
 @app.get("/api/albuns")
 async def listar_albuns(db=Depends(get_db)):
@@ -270,9 +261,6 @@ async def excluir_album(id: int, db=Depends(get_db)):
     return ok({"message": "Álbum excluído"})
 
 
-# ══════════════════════════════════════════════
-# MÚSICAS
-# ══════════════════════════════════════════════
 
 @app.get("/api/musicas")
 async def listar_musicas(db=Depends(get_db)):
@@ -343,9 +331,6 @@ async def excluir_musica(id: int, db=Depends(get_db)):
     return ok({"message": "Música excluída"})
 
 
-# ══════════════════════════════════════════════
-# USUÁRIOS
-# ══════════════════════════════════════════════
 
 @app.get("/api/usuarios")
 async def listar_usuarios(db=Depends(get_db)):
@@ -407,9 +392,7 @@ async def excluir_usuario(id: int, db=Depends(get_db)):
     return ok({"message": "Usuário excluído"})
 
 
-# ══════════════════════════════════════════════
-# PLAYLISTS
-# ══════════════════════════════════════════════
+
 
 @app.get("/api/playlists")
 async def listar_playlists(db=Depends(get_db)):
@@ -511,9 +494,7 @@ async def remover_musica_playlist(id: int, id_musica: int, db=Depends(get_db)):
     return ok({"message": "Música removida da playlist"})
 
 
-# ══════════════════════════════════════════════
-# CURTIDAS
-# ══════════════════════════════════════════════
+
 
 @app.get("/api/curtidas/{id_usuario}")
 async def listar_curtidas(id_usuario: int, db=Depends(get_db)):
@@ -549,9 +530,6 @@ async def descurtir(id_usuario: int, id_musica: int, db=Depends(get_db)):
     return ok({"message": "Curtida removida"})
 
 
-# ══════════════════════════════════════════════
-# HISTÓRICO
-# ══════════════════════════════════════════════
 
 @app.get("/api/historico/{id_usuario}")
 async def listar_historico(id_usuario: int, db=Depends(get_db)):
@@ -577,9 +555,7 @@ async def registrar_reproducao(body: dict = Body(...), db=Depends(get_db)):
     return ok({"message": "Reprodução registrada"})
 
 
-# ══════════════════════════════════════════════
-# DASHBOARD (contadores para admin)
-# ══════════════════════════════════════════════
+
 
 @app.get("/api/dashboard")
 async def dashboard(db=Depends(get_db)):
