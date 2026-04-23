@@ -4,7 +4,7 @@ DB_CONFIG = {
     "host": "localhost",
     "user": "root",
     "password": "PUC@1234",
-    "database": "AuroraStreaming", # Mudou de BD_Aurora_ para o nome real do seu schema
+    "database": "AuroraStreaming", 
     "cursorclass": pymysql.cursors.DictCursor
 }
 

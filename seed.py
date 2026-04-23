@@ -25,7 +25,6 @@ def get_connection():
     return pymysql.connect(**DB_CONFIG)
 
 
-# ── DADOS ──────────────────────────────────────
 
 ARTISTAS = [
     "Queen", "Pink Floyd", "Led Zeppelin", "The Beatles", "Eagles",
@@ -33,7 +32,6 @@ ARTISTAS = [
     "Tame Impala", "Arctic Monkeys", "Kendrick Lamar",
 ]
 
-# (nome_album, data_lancamento, idx_artista)
 ALBUNS = [
     ("A Night at the Opera", "1975-11-21", 0),
     ("News of the World", "1977-10-28", 0),
@@ -52,7 +50,7 @@ ALBUNS = [
     ("DAMN.", "2017-04-14", 11),
 ]
 
-# (titulo, duracao, genero, idx_artista, idx_album)
+
 MUSICAS = [
     ("Bohemian Rhapsody", "00:05:55", "Rock", 0, 0),
     ("Love of My Life", "00:03:39", "Balada", 0, 0),
@@ -106,7 +104,7 @@ MUSICAS = [
     ("LOYALTY.", "00:03:38", "Hip-Hop", 11, 14),
 ]
 
-# (nome, email, senha, ativo, cpf, User)
+
 USUARIOS = [
     ("João Lucas Ribeiro", "joao@aurora.com", "12345678", 1, "123.456.789-00", "joaolucas"),
     ("Gabriella Tavares", "gabi@aurora.com", "12345678", 1, "234.567.890-11", "gabytavares"),
@@ -122,7 +120,7 @@ USUARIOS = [
     ("Thiago Almeida", "thiago@email.com", "senha1234", 1, "555.666.777-88", "thiagoalm"),
 ]
 
-# (nome, publica, idx_usuario)
+
 PLAYLISTS = [
     ("Mix Diário", 1, 0),
     ("Chill Vibes", 1, 0),
@@ -137,7 +135,7 @@ PLAYLISTS = [
 ]
 
 
-# ── FUNÇÕES DE SEED ────────────────────────────
+
 
 def limpar_tabelas(cursor):
     print("🗑  Limpando tabelas...")
@@ -183,7 +181,7 @@ def seed_usuarios(cursor):
         senha_hash = pwd_context.hash(senha)
         cursor.execute(
             "INSERT INTO usuario (nome, email, senha, ativo, cpf, username) VALUES (%s, %s, %s, %s, %s, %s)",
-            (nome, email, senha_hash, ativo, cpf, user) # 👈 Passamos a senha_hash aqui!
+            (nome, email, senha_hash, ativo, cpf, user) 
         )
         print(f"   ✓ {nome}")
 
@@ -253,7 +251,7 @@ def get_ids(cursor, tabela, coluna):
     return [row[coluna] for row in cursor.fetchall()]
 
 
-# ── MAIN ───────────────────────────────────────
+
 
 def main():
     print("=" * 50)
