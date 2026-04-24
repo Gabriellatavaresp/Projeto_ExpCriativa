@@ -82,13 +82,17 @@ async def admin_page(request: Request):
 @app.post("/api/login")
 async def api_login(body: dict = Body(...), db=Depends(get_db)):
     email = body.get("email", "")
-    senha_digitada = body.get("senha", "") 
+    senha_digitada = body.get("senha", "")
     if not email or not senha_digitada:
         raise HTTPException(400, detail="Email e senha são obrigatórios")
+    
+    # Truncate to 72 bytes to prevent bcrypt ValueError
+    senha_digitada_str = str(senha_digitada)[:72]
+    
     with db.cursor() as cur:
-        cur.execute("SELECT id_usuario, nome, email, ativo, username, senha FROM usuario WHERE email = %s", (email,))
+        cur.execute("SELECT id_usuario, nome, email, ativo, username AS User, senha, is_admin FROM usuario WHERE email = %s", (email,))
         user = cur.fetchone()
-    if not user or not pwd_context.verify(senha_digitada, user["senha"]):
+    if not user or not pwd_context.verify(senha_digitada_str, user["senha"]):
         raise HTTPException(401, detail="Email ou senha incorretos")
     if not user["ativo"]:
         raise HTTPException(403, detail="Conta desativada")
@@ -103,7 +107,8 @@ async def api_cadastro(body: dict = Body(...), db=Depends(get_db)):
             raise HTTPException(400, detail=f"Campo '{c}' é obrigatório")
     try:
         with db.cursor() as cur:
-            senha_criptografada = pwd_context.hash(body["senha"])
+            senha_str = str(body["senha"])[:72]
+            senha_criptografada = pwd_context.hash(senha_str)
             cur.execute(
                 "INSERT INTO usuario (nome, email, senha, cpf, username) VALUES (%s, %s, %s, %s, %s)",
                 (body["nome"], body["email"], senha_criptografada, body["cpf"], body["User"])
@@ -335,14 +340,14 @@ async def excluir_musica(id: int, db=Depends(get_db)):
 @app.get("/api/usuarios")
 async def listar_usuarios(db=Depends(get_db)):
     with db.cursor() as cur:
-        cur.execute("SELECT id_usuario, nome, email, ativo, cpf, username FROM usuario ORDER BY nome")
+        cur.execute("SELECT id_usuario, nome, email, ativo, cpf, username AS User FROM usuario ORDER BY nome")
         return ok(serialize_list(cur.fetchall()))
 
 
 @app.get("/api/usuarios/{id}")
 async def detalhe_usuario(id: int, db=Depends(get_db)):
     with db.cursor() as cur:
-        cur.execute("SELECT id_usuario, nome, email, ativo, cpf, username FROM usuario WHERE id_usuario = %s", (id,))
+        cur.execute("SELECT id_usuario, nome, email, ativo, cpf, username AS User FROM usuario WHERE id_usuario = %s", (id,))
         user = cur.fetchone()
         if not user:
             raise HTTPException(404, detail="Usuário não encontrado")
@@ -358,9 +363,11 @@ async def criar_usuario(body: dict = Body(...), db=Depends(get_db)):
             raise HTTPException(400, detail=f"Campo '{campo}' é obrigatório")
     try:
         with db.cursor() as cur:
+            senha_str = str(body["senha"])[:72]
+            senha_criptografada = pwd_context.hash(senha_str)
             cur.execute(
                 "INSERT INTO usuario (nome, email, senha, cpf, username) VALUES (%s, %s, %s, %s, %s)",
-                (body["nome"], body["email"], body["senha"], body.get("cpf"), body.get("User"))
+                (body["nome"], body["email"], senha_criptografada, body.get("cpf"), body.get("User"))
             )
             db.commit()
             return ok({"id_usuario": cur.lastrowid})
@@ -372,7 +379,7 @@ async def criar_usuario(body: dict = Body(...), db=Depends(get_db)):
 async def atualizar_usuario(id: int, body: dict = Body(...), db=Depends(get_db)):
     with db.cursor() as cur:
         cur.execute("""
-            UPDATE usuario SET nome=%s, email=%s, cpf=%s, User=%s, ativo=%s
+            UPDATE usuario SET nome=%s, email=%s, cpf=%s, username=%s, ativo=%s
             WHERE id_usuario=%s
         """, (body.get("nome"), body.get("email"), body.get("cpf"),
               body.get("User"), body.get("ativo", 1), id))

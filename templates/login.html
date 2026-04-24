@@ -36,16 +36,16 @@
         <p>Entre para continuar ouvindo playlists, artistas salvos e recomendações personalizadas.</p>
       </div>
 
-      <form class="login-form">
+      <form id="loginForm" class="login-form">
         <label class="field">
           <span>E-mail</span>
-          <input type="email" placeholder="voce@aurora.com" />
+          <input id="emailInput" type="email" placeholder="voce@aurora.com" required />
         </label>
 
         <label class="field">
           <span>Senha</span>
           <div class="password-wrap">
-            <input id="passwordInput" type="password" placeholder="Digite sua senha" />
+            <input id="passwordInput" type="password" placeholder="Digite sua senha" required />
             <button id="togglePassword" class="password-toggle" type="button" aria-label="Mostrar senha">Mostrar</button>
           </div>
         </label>
@@ -69,5 +69,6 @@
   </main>
 
   <script src="../static/script.js"></script>
+  <script src="../static/js/login.js"></script>
 </body>
 </html>

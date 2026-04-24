@@ -6,7 +6,7 @@ Schema real:
   artista:  id_artista, nome_artista
   album:    id_album, nome_album, data_lancamento, id_artista
   musica:   id_musica, titulo, duracao(TIME), genero, id_artista, id_album
-  usuario:  id_usuario, nome, email, senha, foto_perfil, ativo, cpf, User
+  usuario:  id_usuario, nome, email, senha, foto_perfil, ativo, cpf, username, is_admin
   playlist: id_playlist, nome, publica, id_usuario
   playlist_contem_musica: id_playlist, id_musica
   curtida:  id_usuario, id_musica, data_curtida
@@ -106,7 +106,7 @@ MUSICAS = [
 
 
 USUARIOS = [
-    ("João Lucas Ribeiro", "joao@aurora.com", "12345678", 1, "123.456.789-00", "joaolucas"),
+    ("João Lucas Ribeiro", "joao@aurora.com", "12345678", 1, "123.456.789-00", "joaolucas", 1),
     ("Gabriella Tavares", "gabi@aurora.com", "12345678", 1, "234.567.890-11", "gabytavares"),
     ("Maria Silva", "maria@email.com", "senha1234", 1, "345.678.901-22", "mariasilva"),
     ("Pedro Santos", "pedro@email.com", "senha1234", 1, "456.789.012-33", "pedrosantos"),
@@ -177,11 +177,13 @@ def seed_musicas(cursor, ids_artista, ids_album):
 
 def seed_usuarios(cursor):
     print("\n👤 Inserindo usuários com senhas seguras...")
-    for nome, email, senha, ativo, cpf, user in USUARIOS:
-        senha_hash = pwd_context.hash(senha)
+    for u in USUARIOS:
+        nome, email, senha, ativo, cpf, user = u[:6]
+        is_admin = u[6] if len(u) > 6 else 0
+        senha_hash = pwd_context.hash(senha[:72])
         cursor.execute(
-            "INSERT INTO usuario (nome, email, senha, ativo, cpf, username) VALUES (%s, %s, %s, %s, %s, %s)",
-            (nome, email, senha_hash, ativo, cpf, user) 
+            "INSERT INTO usuario (nome, email, senha, ativo, cpf, username, is_admin) VALUES (%s, %s, %s, %s, %s, %s, %s)",
+            (nome, email, senha_hash, ativo, cpf, user, is_admin) 
         )
         print(f"   ✓ {nome}")
 
