@@ -145,7 +145,14 @@
                 </svg>
               </button>
             </div>
-            <span class="error-msg" id="passwordError">A senha precisa ter no minimo 8 caracteres.</span>
+            <div id="passwordStrength" class="strength-bar">
+              <div id="strengthIndicator" class="strength-fill"></div>
+            </div>
+            <span class="error-msg" id="passwordErrorLength">A senha precisa ter no mínimo 8 caracteres.</span>
+            <span class="error-msg" id="passwordErrorUpper">A senha precisa ter pelo menos uma letra maiúscula.</span>
+            <span class="error-msg" id="passwordErrorLower">A senha precisa ter pelo menos uma letra minúscula.</span>
+            <span class="error-msg" id="passwordErrorNumber">A senha precisa ter pelo menos um número.</span>
+            <span class="error-msg" id="passwordErrorSymbol">A senha precisa ter pelo menos um caractere especial.</span>
           </div>
 
          

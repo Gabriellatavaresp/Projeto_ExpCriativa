@@ -52,6 +52,77 @@
       return second === parseInt(cpf[10]);
     }
 
+    function isStrongPassword(password) {
+      // Pelo menos 8 caracteres
+      if (password.length < 8) return false;
+
+      // Pelo menos uma letra maiúscula
+      if (!/[A-Z]/.test(password)) return false;
+
+      // Pelo menos uma letra minúscula
+      if (!/[a-z]/.test(password)) return false;
+
+      // Pelo menos um número
+      if (!/[0-9]/.test(password)) return false;
+
+      // Pelo menos um caractere especial (!@#$%^&*, etc)
+      if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
+
+      return true;
+    }
+
+    function getPasswordStrength(password) {
+      let score = 0;
+      if (password.length >= 8) score += 1;          // comprimento mínimo
+      if (/[A-Z]/.test(password)) score += 1;       // maiúscula
+      if (/[a-z]/.test(password)) score += 1;       // minúscula
+      if (/[0-9]/.test(password)) score += 1;       // número
+      if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score += 1; // símbolo
+      return score; // 0 a 5
+    }
+
+    function validatePasswordDetailed(password) {
+      return {
+        length: password.length < 8,
+        upper: !/[A-Z]/.test(password),
+        lower: !/[a-z]/.test(password),
+        number: !/[0-9]/.test(password),
+        symbol: !/[!@#$%^&*(),.?":{}|<>]/.test(password),
+      };
+    }
+
+    // Atualizar barra em tempo real
+    const passwordInput = document.getElementById('password');
+    const strengthFill = document.getElementById('strengthIndicator');
+
+    passwordInput.addEventListener('input', () => {
+      const password = passwordInput.value;
+      const errors = validatePasswordDetailed(password);
+
+      // Mostrar/ocultar erros
+      setErrorVisibility('passwordErrorLength', errors.length);
+      setErrorVisibility('passwordErrorUpper', errors.upper);
+      setErrorVisibility('passwordErrorLower', errors.lower);
+      setErrorVisibility('passwordErrorNumber', errors.number);
+      setErrorVisibility('passwordErrorSymbol', errors.symbol);
+
+      // Atualizar barra de força
+      const score = 5 - Object.values(errors).filter(Boolean).length; // 0 a 5
+      const percent = (score / 5) * 100;
+      strengthFill.style.width = percent + '%';
+
+      if (score <= 2) strengthFill.style.background = 'red';
+      else if (score === 3) strengthFill.style.background = 'orange';
+      else if (score === 4) strengthFill.style.background = 'yellowgreen';
+      else if (score === 5) strengthFill.style.background = 'green';
+    });
+
+    function setErrorVisibility(id, show) {
+      const el = document.getElementById(id);
+      if (show) el.classList.add('visible');
+      else el.classList.remove('visible');
+    }
+
     // limpa o erro ao digitar
     ['name','cpf','email','username','password','confirmPassword'].forEach(id => {
       document.getElementById(id).addEventListener('input', () => {
@@ -84,9 +155,20 @@
       if (username.length < 3) {
         setError('username', 'usernameError', true); valid = false;
       }
-      if (password.length < 8) {
-        setError('password', 'passwordError', true); valid = false;
+      const pwdErrors = validatePasswordDetailed(password);
+      let hasPwdError = false;
+      for (let key in pwdErrors) {
+        if (pwdErrors[key]) {
+          setErrorVisibility(`passwordError${capitalize(key)}`, true);
+          hasPwdError = true;
+        } else {
+          setErrorVisibility(`passwordError${capitalize(key)}`, false);
+        }
       }
+      if (hasPwdError) valid = false;
+
+      // Função auxiliar
+      function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
       if (confirmPassword !== password) {
         setError('confirmPassword', 'confirmPasswordError', true); valid = false;
       }
