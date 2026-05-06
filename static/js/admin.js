@@ -277,10 +277,21 @@ function openAddUsuario() {
     <input type="password" id="fSenha" placeholder="Senha" required>
     <input type="text" id="fCpf" placeholder="CPF" maxlength="14">
     <input type="text" id="fUser" placeholder="Username">
+    <small id="senhaErro" style="color:red;display:none"></small>
   `;
   document.getElementById('formModal').dataset.type = 'usuario';
+  
+  document.getElementById('fCpf').addEventListener('input', function () {
+    let d = this.value.replace(/\D/g, '').slice(0, 11);
+    if (d.length > 9) d = d.slice(0,3)+'.'+d.slice(3,6)+'.'+d.slice(6,9)+'-'+d.slice(9);
+    else if (d.length > 6) d = d.slice(0,3)+'.'+d.slice(3,6)+'.'+d.slice(6);
+    else if (d.length > 3) d = d.slice(0,3)+'.'+d.slice(3);
+    this.value = d;
+  });
+
   openModal();
 }
+
 
 async function openEditUsuario(id) {
   const u = await fetchJson(`/api/usuarios/${id}`);
