@@ -72,3 +72,14 @@
       sidebar.classList.remove('open');
       overlay.classList.remove('open');
     };
+
+        // Iniciais do usuário no avatar
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.nome) {
+      const iniciais = user.nome
+        .split(' ')
+        .slice(0, 2)
+        .map(p => p[0].toUpperCase())
+        .join('');
+      document.getElementById('userAvatar').textContent = iniciais;
+    }
