@@ -61,116 +61,26 @@ async def cadastro_page(request: Request):
     return templates.TemplateResponse(request=request, name="cadastro.html")
 
 @app.get("/home", response_class=HTMLResponse)
-async def home_page(request: Request, db=Depends(get_db)):
-    with db.cursor() as cur:
-        cur.execute("""
-            SELECT p.id_playlist, p.nome, COUNT(pm.id_musica) as total
-            FROM playlist p
-            LEFT JOIN playlist_contem_musica pm ON pm.id_playlist = p.id_playlist
-            GROUP BY p.id_playlist
-            ORDER BY p.nome
-            LIMIT 10
-        """)
-        playlists = serialize_list(cur.fetchall())
-        
-        cur.execute("""
-            SELECT m.id_musica, m.titulo, m.duracao, a.nome_artista
-            FROM musica m
-            JOIN artista a ON a.id_artista = m.id_artista
-            ORDER BY m.titulo
-            LIMIT 20
-        """)
-        musicas_recentes = serialize_list(cur.fetchall())
-        
-        cur.execute("""
-            SELECT id_artista, nome_artista
-            FROM artista
-            ORDER BY nome_artista
-            LIMIT 10
-        """)
-        artistas = serialize_list(cur.fetchall())
-    
-    return templates.TemplateResponse(
-        request=request, 
-        name="homepage.html",
-        context={
-            "playlists": playlists,
-            "musicas_recentes": musicas_recentes,
-            "artistas": artistas
-        }
-    )
+async def home_page(request: Request):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(request=request, name="homepage.html")
 
 @app.get("/biblioteca", response_class=HTMLResponse)
-async def biblioteca_page(request: Request, db=Depends(get_db)):
-    with db.cursor() as cur:
-        cur.execute("""
-            SELECT DISTINCT m.id_musica, m.titulo, m.duracao, m.genero, a.nome_artista, al.nome_album
-            FROM musica m
-            JOIN artista a ON a.id_artista = m.id_artista
-            JOIN album al ON al.id_album = m.id_album
-            ORDER BY m.titulo
-        """)
-        musicas = serialize_list(cur.fetchall())
-        
-        cur.execute("""
-            SELECT id_artista, nome_artista
-            FROM artista
-            ORDER BY nome_artista
-        """)
-        artistas = serialize_list(cur.fetchall())
-    
-    return templates.TemplateResponse(
-        request=request,
-        name="biblioteca.html",
-        context={
-            "musicas": musicas,
-            "artistas": artistas
-        }
-    )
+async def biblioteca_page(request: Request):
+    return templates.TemplateResponse(request=request, name="biblioteca.html")
 
 @app.get("/playlist", response_class=HTMLResponse)
-async def playlist_page(request: Request, db=Depends(get_db)):
-    with db.cursor() as cur:
-        cur.execute("""
-            SELECT p.id_playlist, p.nome, p.publica, COUNT(pm.id_musica) as total_musicas
-            FROM playlist p
-            LEFT JOIN playlist_contem_musica pm ON pm.id_playlist = p.id_playlist
-            GROUP BY p.id_playlist
-            ORDER BY p.nome
-        """)
-        playlists = serialize_list(cur.fetchall())
-    
-    return templates.TemplateResponse(
-        request=request,
-        name="playlist.html",
-        context={"playlists": playlists}
-    )
+async def playlist_page(request: Request):
+    return templates.TemplateResponse(request=request, name="playlist.html")
 
 @app.get("/admin", response_class=HTMLResponse)
-async def admin_page(request: Request, db=Depends(get_db)):
+async def admin_page(request: Request):
     if not request.session.get("user_logged_in"):
         return RedirectResponse(url="/login", status_code=302)
     if request.session.get("perfil") != "admin":
         return RedirectResponse(url="/home", status_code=302)
-    
-    with db.cursor() as cur:
-        stats = {}
-        for t, label in [("musica", "musicas"), ("artista", "artistas"),
-                         ("playlist", "playlists"), ("usuario", "usuarios")]:
-            cur.execute(f"SELECT COUNT(*) as total FROM {t}")
-            stats[label] = cur.fetchone()["total"]
-        
-        cur.execute("SELECT id_usuario, nome, email, ativo FROM usuario ORDER BY nome LIMIT 20")
-        usuarios = serialize_list(cur.fetchall())
-    
-    return templates.TemplateResponse(
-        request=request,
-        name="admin.html",
-        context={
-            "stats": stats,
-            "usuarios": usuarios
-        }
-    )
+    return templates.TemplateResponse(request=request, name="admin.html")
 
 
 @app.post("/login")
@@ -422,19 +332,16 @@ async def detalhe_musica(id: int, db=Depends(get_db)):
 
 @app.post("/api/musicas")
 async def criar_musica(body: dict = Body(...), db=Depends(get_db)):
-    for campo in ["titulo", "id_artista", "id_album"]:
-        if not body.get(campo):
-            raise HTTPException(400, detail=f"Campo '{campo}' é obrigatório")
-    try:
-        with db.cursor() as cur:
-            cur.execute(
-                "INSERT INTO musica (titulo, duracao, genero, id_artista, id_album) VALUES (%s, %s, %s, %s, %s)",
-                (body["titulo"], body.get("duracao"), body.get("genero"), body["id_artista"], body["id_album"])
-            )
-            db.commit()
-            return ok({"id_musica": cur.lastrowid})
-    except pymysql.err.IntegrityError as e:
-        raise HTTPException(409, detail="Música já cadastrada ou dados inválidos")
+    titulo = body.get("titulo", "").strip()
+    if not titulo or not body.get("id_artista") or not body.get("id_album"):
+        raise HTTPException(400, detail="titulo, id_artista e id_album são obrigatórios")
+    with db.cursor() as cur:
+        cur.execute(
+            "INSERT INTO musica (titulo, duracao, genero, id_artista, id_album) VALUES (%s, %s, %s, %s, %s)",
+            (titulo, body.get("duracao"), body.get("genero"), body["id_artista"], body["id_album"])
+        )
+        db.commit()
+        return ok({"id_musica": cur.lastrowid})
 
 
 @app.put("/api/musicas/{id}")
