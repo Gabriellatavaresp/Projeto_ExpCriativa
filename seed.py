@@ -180,7 +180,8 @@ def seed_usuarios(cursor):
     for u in USUARIOS:
         nome, email, senha, ativo, cpf, user = u[:6]
         is_admin = u[6] if len(u) > 6 else 0
-        senha_hash = pwd_context.hash(senha[:72])
+        senha_plana = str(senha).strip()[:71] 
+        senha_hash = pwd_context.hash(senha_plana)
         cursor.execute(
             "INSERT INTO usuario (nome, email, senha, ativo, cpf, username, is_admin) VALUES (%s, %s, %s, %s, %s, %s, %s)",
             (nome, email, senha_hash, ativo, cpf, user, is_admin) 
