@@ -95,7 +95,14 @@
         <button class="icon-button" title="Notificações">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
         </button>
-        <div class="user-avatar" id="userAvatar">JL</div>
+        <div class="avatar-wrap" style="position:relative">
+          <div class="user-avatar" id="userAvatar" onclick="toggleAvatarMenu()" style="cursor:pointer">GT</div>
+          <div id="avatarMenu" style="display:none;position:absolute;top:48px;right:0;background:#1e1e2e;border:1px solid #333;border-radius:12px;padding:8px;min-width:180px;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.4);">
+            <div style="padding:8px 12px;color:#aaa;font-size:0.8rem;border-bottom:1px solid #333;margin-bottom:4px" id="menuNomeUsuario"></div>
+            <a id="adminLink" href="/admin" style="display:block;padding:10px 12px;color:#fff;text-decoration:none;border-radius:8px;font-size:0.9rem" onmouseover="this.style.background='#2a2a3e'" onmouseout="this.style.background='transparent'">⚙️ Painel Admin</a>
+            <a href="/logout" style="display:block;padding:10px 12px;color:#f87171;text-decoration:none;border-radius:8px;font-size:0.9rem" onmouseover="this.style.background='#2a2a3e'" onmouseout="this.style.background='transparent'">🚪 Sair</a>
+          </div>
+        </div>
       </div>
     </header>
 

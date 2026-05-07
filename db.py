@@ -1,10 +1,10 @@
 import pymysql
 
 DB_CONFIG = {
-    "host": "localhost",
-    "port": 3307,
+    "host": "127.0.0.1",
+    "port": 3306,
     "user": "root",
-    "password": "1234",
+    "password": "PUC@1234",
     "database": "AuroraStreaming", 
     "cursorclass": pymysql.cursors.DictCursor
 }
