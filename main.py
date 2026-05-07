@@ -391,16 +391,19 @@ async def detalhe_musica(id: int, db=Depends(get_db)):
 
 @app.post("/api/musicas")
 async def criar_musica(body: dict = Body(...), db=Depends(get_db)):
-    titulo = body.get("titulo", "").strip()
-    if not titulo or not body.get("id_artista") or not body.get("id_album"):
-        raise HTTPException(400, detail="titulo, id_artista e id_album são obrigatórios")
-    with db.cursor() as cur:
-        cur.execute(
-            "INSERT INTO musica (titulo, duracao, genero, id_artista, id_album) VALUES (%s, %s, %s, %s, %s)",
-            (titulo, body.get("duracao"), body.get("genero"), body["id_artista"], body["id_album"])
-        )
-        db.commit()
-        return ok({"id_musica": cur.lastrowid})
+    for campo in ["titulo", "id_artista", "id_album"]:
+        if not body.get(campo):
+            raise HTTPException(400, detail=f"Campo '{campo}' é obrigatório")
+    try:
+        with db.cursor() as cur:
+            cur.execute(
+                "INSERT INTO musica (titulo, duracao, genero, id_artista, id_album) VALUES (%s, %s, %s, %s, %s)",
+                (body["titulo"], body.get("duracao"), body.get("genero"), body["id_artista"], body["id_album"])
+            )
+            db.commit()
+            return ok({"id_musica": cur.lastrowid})
+    except pymysql.err.IntegrityError as e:
+        raise HTTPException(409, detail="Música já cadastrada ou dados inválidos")
 
 
 @app.put("/api/musicas/{id}")
