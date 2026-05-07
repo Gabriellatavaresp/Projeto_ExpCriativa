@@ -13,8 +13,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 app = FastAPI(title="Aurora Streaming API")
 
-app.add_middleware(SessionMiddleware, secret_key="aurora_secret_key")
-
+app.add_middleware(
+    SessionMiddleware,
+    secret_key="aurora_secret_key",
+    session_cookie="aurora_session",
+    max_age=1800,  # 30 minutos
+    same_site="lax",
+    https_only=False
+)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
@@ -172,28 +178,11 @@ async def admin_page(request: Request, db=Depends(get_db)):
         }
     )
 
-
-@app.post("/login")
-async def api_login(request: Request, db=Depends(get_db)):
-    body = await request.form()
-    email = body.get("email", "")
-    senha = body.get("senha", "")
-
-    with db.cursor() as cur:
-        cur.execute("SELECT * FROM usuario WHERE email = %s", (email,))
-        user = cur.fetchone()
-
-    if not user or not pwd_context.verify(str(senha)[:72], user["senha"]):
-        raise HTTPException(401, detail="Email ou senha incorretos")
-
-    request.session["user_logged_in"] = True
-    request.session["nome_usuario"] = user["nome"]
-    request.session["perfil"] = "admin" if user["is_admin"] else "usuario"
-    request.session["id_usuario"] = user["id_usuario"]
-
-    if user["is_admin"]:
-        return RedirectResponse(url="/admin", status_code=303)
-    return RedirectResponse(url="/home", status_code=303)
+@app.get("/api/check-session")
+async def check_session(request: Request):
+    if not request.session.get("user_logged_in"):
+        raise HTTPException(401, detail="Sessão expirada")
+    return ok({"status": "ok"})
 
 @app.post("/api/login")
 async def api_login(request: Request, body: dict = Body(...), db=Depends(get_db)):

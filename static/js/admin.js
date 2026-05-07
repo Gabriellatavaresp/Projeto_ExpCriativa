@@ -408,6 +408,15 @@ async function loadArtistasCache() {
   }
 }
 
+setInterval(async () => {
+  console.log('verificando sessão...');
+  const res = await fetch('/api/check-session');
+  console.log('status:', res.status);
+  if (res.status === 401) {
+    window.location.href = '/login';
+  }
+}, 30000);
+
 // Fechar modal clicando fora
 window.addEventListener('click', (e) => {
   const modal = document.getElementById('formModal');
