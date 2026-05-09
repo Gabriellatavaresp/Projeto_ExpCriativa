@@ -4,7 +4,7 @@ DB_CONFIG = {
     "host": "127.0.0.1",
     "port": 3306,
     "user": "root",
-    "password": "PUC@1234",
+    "password": "Puc@12345A",
     "database": "AuroraStreaming", 
     "cursorclass": pymysql.cursors.DictCursor
 }
