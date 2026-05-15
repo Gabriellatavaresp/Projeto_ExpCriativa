@@ -7,7 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Syne:wght@600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../static/css/cadastro.css" />
+  <link rel="stylesheet" href="/static/css/cadastro.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  <script src="/static/js/aurora_swal.js"></script>
 </head>
 <body>
 
@@ -42,7 +45,7 @@
 
           
           <div class="field">
-            <label for="name">Nome Completo</label>
+            <label for="name">Nome Completo <span style="color:#f87171">*</span></label>
             <div class="input-wrap">
               <svg class="input-icon" viewBox="0 0 24 24">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -60,7 +63,7 @@
 
           
           <div class="field">
-            <label for="cpf">CPF</label>
+            <label for="cpf">CPF <span style="color:#f87171">*</span></label>
             <div class="input-wrap">
               <svg class="input-icon" viewBox="0 0 24 24">
                 <rect x="2" y="5" width="20" height="14" rx="2"/>
@@ -80,7 +83,7 @@
 
           
           <div class="field">
-            <label for="email">Email</label>
+            <label for="email">Email <span style="color:#f87171">*</span></label>
             <div class="input-wrap">
               <svg class="input-icon" viewBox="0 0 24 24">
                 <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -98,7 +101,7 @@
 
           
           <div class="field">
-            <label for="username">User</label>
+            <label for="username">User <span style="color:#f87171">*</span></label>
             <div class="input-wrap">
               <svg class="input-icon" viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="4"/>
@@ -113,10 +116,9 @@
             </div>
             <span class="error-msg" id="usernameError">Nome de usuário precisa ter no minímo 3 caracteres.</span>
           </div>
-
           
           <div class="field">
-            <label for="password">Senha</label>
+            <label for="password">Senha <span style="color:#f87171">*</span></label>
             <div class="input-wrap">
               <svg class="input-icon" viewBox="0 0 24 24">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -148,7 +150,7 @@
 
          
           <div class="field">
-            <label for="confirmPassword">Confirme sua senha</label>
+            <label for="confirmPassword">Confirme sua senha <span style="color:#f87171">*</span></label>
             <div class="input-wrap">
               <svg class="input-icon" viewBox="0 0 24 24">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
@@ -187,7 +189,7 @@
 
         
         <p class="signin-hint">
-          Já possui uma conta? <a href="login">Entrar</a>
+          Já possui uma conta? <a href="/login">Entrar</a>
         </p>
       </div>
 
@@ -196,6 +198,6 @@
     </div>
   </div>
 
-  <script src="../static/js/cadastro.js"></script>
+  <script src="/static/js/cadastro.js"></script>
 </body>
 </html>

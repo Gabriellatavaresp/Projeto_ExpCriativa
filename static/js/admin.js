@@ -114,35 +114,86 @@ async function openAddMusica() {
   document.getElementById('modalTitle').textContent = 'Adicionar Música';
   document.getElementById('formFields').innerHTML = `
     <input type="hidden" id="editId" value="">
+    <div style="margin-bottom:12px">
+      <label style="color:#aaa;font-size:.85rem;display:block;margin-bottom:6px">🎵 Buscar no Deezer (auto-preenche campos)</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="deezerQuery" placeholder="Ex: Bohemian Rhapsody Queen" style="flex:1">
+        <button type="button" onclick="searchDeezer()" style="padding:0 16px;background:#6b9997;border:none;border-radius:8px;color:#fff;cursor:pointer;font-weight:600">Buscar</button>
+      </div>
+      <div id="deezerResults" style="margin-top:8px;max-height:180px;overflow-y:auto;border-radius:8px;background:#1a1a2a"></div>
+    </div>
     <input type="text" id="fTitulo" placeholder="Título" required>
     <input type="text" id="fDuracao" placeholder="Duração (HH:MM:SS)" required>
     <input type="text" id="fGenero" placeholder="Gênero">
-    <select id="fArtista">${artistas.map(a => `<option value="${a.id_artista}">${esc(a.nome_artista)}</option>`).join('')}</select>
-    <select id="fAlbum">${albuns.map(a => `<option value="${a.id_album}">${esc(a.nome_album)}</option>`).join('')}</select>
+    <select id="fArtista">${artistas.map(a=>`<option value="${a.id_artista}">${esc(a.nome_artista)}</option>`).join('')}</select>
+    <select id="fAlbum">${albuns.map(a=>`<option value="${a.id_album}">${esc(a.nome_album)}</option>`).join('')}</select>
+    <input type="hidden" id="fPreviewUrl" value="">
+    <input type="hidden" id="fDeezerId" value="">
   `;
   document.getElementById('formModal').dataset.type = 'musica';
   openModal();
 }
 
 async function openEditMusica(id) {
-  const m = (await fetchJson(`/api/musicas/${id}`));
+  const m = await fetchJson(`/api/musicas/${id}`);
   await loadArtistasCache();
   const albuns = await fetchJson('/api/albuns');
   document.getElementById('modalTitle').textContent = 'Editar Música';
   document.getElementById('formFields').innerHTML = `
     <input type="hidden" id="editId" value="${id}">
     <input type="text" id="fTitulo" placeholder="Título" value="${esc(m.titulo)}" required>
-    <input type="text" id="fDuracao" placeholder="Duração (HH:MM:SS)" value="${m.duracao || ''}" required>
-    <input type="text" id="fGenero" placeholder="Gênero" value="${esc(m.genero || '')}">
-    <select id="fArtista">${artistas.map(a => `<option value="${a.id_artista}" ${a.id_artista===m.id_artista?'selected':''}>${esc(a.nome_artista)}</option>`).join('')}</select>
-    <select id="fAlbum">${albuns.map(a => `<option value="${a.id_album}" ${a.id_album===m.id_album?'selected':''}>${esc(a.nome_album)}</option>`).join('')}</select>
+    <input type="text" id="fDuracao" placeholder="Duração (HH:MM:SS)" value="${m.duracao||''}" required>
+    <input type="text" id="fGenero" placeholder="Gênero" value="${esc(m.genero||'')}">
+    <select id="fArtista">${artistas.map(a=>`<option value="${a.id_artista}" ${a.id_artista===m.id_artista?'selected':''}>${esc(a.nome_artista)}</option>`).join('')}</select>
+    <select id="fAlbum">${albuns.map(a=>`<option value="${a.id_album}" ${a.id_album===m.id_album?'selected':''}>${esc(a.nome_album)}</option>`).join('')}</select>
+    <input type="hidden" id="fPreviewUrl" value="${m.preview_url||''}">
+    <input type="hidden" id="fDeezerId" value="${m.deezer_id||''}">
   `;
   document.getElementById('formModal').dataset.type = 'musica';
   openModal();
 }
 
+async function searchDeezer() {
+  const q = document.getElementById('deezerQuery')?.value?.trim();
+  if (!q) return;
+  const resultsEl = document.getElementById('deezerResults');
+  resultsEl.innerHTML = '<div style="padding:10px;color:#aaa;font-size:.85rem">Buscando…</div>';
+  try {
+    const res  = await fetch(`/api/deezer/search?q=${encodeURIComponent(q)}&limit=6`);
+    const json = await res.json();
+    const tracks = json.data || [];
+    if (!tracks.length) { resultsEl.innerHTML = '<div style="padding:10px;color:#aaa;font-size:.85rem">Nenhum resultado.</div>'; return; }
+    resultsEl.innerHTML = tracks.map((t,i) => `
+      <div onclick="fillFromDeezer(${i})" data-track='${JSON.stringify(t).replace(/'/g,"&#39;")}' style="display:flex;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;border-radius:6px;transition:.15s" onmouseover="this.style.background='#2a2a3e'" onmouseout="this.style.background='transparent'">
+        <img src="${t.capa||''}" alt="" style="width:36px;height:36px;border-radius:4px;object-fit:cover" onerror="this.style.display='none'">
+        <div style="flex:1;min-width:0">
+          <div style="color:#fff;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(t.titulo)}</div>
+          <div style="color:#aaa;font-size:.75rem">${esc(t.artista)} · ${t.duracao}</div>
+        </div>
+        ${t.preview_url?'<span style="color:#6b9997;font-size:.75rem">▶ Preview</span>':''}
+      </div>`).join('');
+    // salvar tracks no data attribute do container
+    resultsEl._tracks = tracks;
+  } catch(e) { resultsEl.innerHTML = '<div style="padding:10px;color:#f87171;font-size:.85rem">Erro ao buscar.</div>'; }
+}
+
+function fillFromDeezer(idx) {
+  const el = document.getElementById('deezerResults');
+  const t  = el._tracks?.[idx];
+  if (!t) return;
+  const titulo = document.getElementById('fTitulo');
+  const duracao = document.getElementById('fDuracao');
+  const previewUrl = document.getElementById('fPreviewUrl');
+  const deezerId  = document.getElementById('fDeezerId');
+  if(titulo)  titulo.value  = t.titulo;
+  if(duracao) duracao.value = t.duracao;
+  if(previewUrl) previewUrl.value = t.preview_url||'';
+  if(deezerId)   deezerId.value   = t.deezer_id||'';
+  el.innerHTML = `<div style="padding:8px 12px;color:#6b9997;font-size:.85rem">✓ Selecionado: ${esc(t.titulo)} — ${esc(t.artista)}</div>`;
+}
+
 async function deleteMusica(id) {
-  if (!confirm('Excluir esta música?')) return;
+  if (!await swalConfirmDelete('esta música')) return;
   await fetch(`${API}/api/musicas/${id}`, { method: 'DELETE' });
   loadMusicas();
 }
@@ -188,7 +239,7 @@ function openEditArtista(id, nome) {
 }
 
 async function deleteArtista(id) {
-  if (!confirm('Excluir este artista?')) return;
+  if (!await swalConfirmDelete('este artista')) return;
   await fetch(`${API}/api/artistas/${id}`, { method: 'DELETE' });
   loadArtistas();
 }
@@ -243,7 +294,7 @@ async function openEditPlaylist(id) {
 }
 
 async function deletePlaylist(id) {
-  if (!confirm('Excluir esta playlist?')) return;
+  if (!await swalConfirmDelete('esta playlist')) return;
   await fetch(`${API}/api/playlists/${id}`, { method: 'DELETE' });
   loadPlaylists();
 }
@@ -300,7 +351,7 @@ async function openEditUsuario(id) {
     <input type="hidden" id="editId" value="${id}">
     <input type="text" id="fNome" placeholder="Nome Completo" value="${esc(u.nome)}" required>
     <input type="email" id="fEmail" placeholder="E-mail" value="${esc(u.email)}" required>
-    <input type="text" id="fCpf" placeholder="CPF" maxlength="14" value="${esc(u.cpf || '')}">
+    <input type="text" id="fCpf" placeholder="CPF" maxlength="14" value="${esc(u.cpf || '')}" readonly style="opacity:0.5;cursor:not-allowed" title="CPF não pode ser alterado">
     <input type="text" id="fUser" placeholder="Username" value="${esc(u.User || '')}">
     <label style="display:flex;align-items:center;gap:8px;color:#ccc;font-size:.9rem;margin-top:4px">
       <input type="checkbox" id="fAtivo" ${u.ativo ? 'checked' : ''}> Ativo
@@ -311,7 +362,7 @@ async function openEditUsuario(id) {
 }
 
 async function deleteUsuario(id) {
-  if (!confirm('Excluir este usuário?')) return;
+  if (!await swalConfirmDelete('este usuário')) return;
   await fetch(`${API}/api/usuarios/${id}`, { method: 'DELETE' });
   loadUsuarios();
 }
@@ -337,11 +388,13 @@ async function handleFormSubmit(e) {
 
   if (type === 'musica') {
     bodyData = {
-      titulo: document.getElementById('fTitulo').value,
-      duracao: document.getElementById('fDuracao').value,
-      genero: document.getElementById('fGenero').value,
-      id_artista: parseInt(document.getElementById('fArtista').value),
-      id_album: parseInt(document.getElementById('fAlbum').value),
+      titulo:      document.getElementById('fTitulo').value,
+      duracao:     document.getElementById('fDuracao').value,
+      genero:      document.getElementById('fGenero').value,
+      id_artista:  parseInt(document.getElementById('fArtista').value),
+      id_album:    parseInt(document.getElementById('fAlbum').value),
+      preview_url: document.getElementById('fPreviewUrl')?.value || null,
+      deezer_id:   document.getElementById('fDeezerId')?.value ? parseInt(document.getElementById('fDeezerId').value) : null,
     };
     url = isEdit ? `/api/musicas/${editId}` : '/api/musicas';
     method = isEdit ? 'PUT' : 'POST';
@@ -378,13 +431,13 @@ async function handleFormSubmit(e) {
     });
     const json = await res.json();
     if (!res.ok) {
-      alert(json.detail || 'Erro ao salvar');
+      await swalError(json.detail || 'Erro ao salvar');
       return;
     }
     closeModal();
     showSection(currentSection);
   } catch (err) {
-    alert('Erro de conexão: ' + err.message);
+    await swalError('Erro de conexão: ' + err.message);
   }
 }
 

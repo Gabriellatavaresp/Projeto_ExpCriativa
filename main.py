@@ -1,23 +1,30 @@
-from fastapi import FastAPI, Request, Depends, HTTPException, Body
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi import FastAPI, Request, Depends, HTTPException, Body, UploadFile, File
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 import pymysql
+import httpx
+import base64
 from db import get_db
 from datetime import date, time, datetime, timedelta
 from passlib.context import CryptContext
 from starlette.middleware.sessions import SessionMiddleware
+import init_db
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 app = FastAPI(title="Aurora Streaming API")
 
+@app.on_event("startup")
+async def startup_event():
+    init_db.init_if_empty()
+
 app.add_middleware(
     SessionMiddleware,
     secret_key="aurora_secret_key",
     session_cookie="aurora_session",
-    max_age=1800,  # 30 minutos
+    max_age=300,  # 5 minutos no servidor; JS controla o timeout de 1 min
     same_site="lax",
     https_only=False
 )
@@ -68,6 +75,8 @@ async def cadastro_page(request: Request):
 
 @app.get("/home", response_class=HTMLResponse)
 async def home_page(request: Request, db=Depends(get_db)):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
     with db.cursor() as cur:
         cur.execute("""
             SELECT p.id_playlist, p.nome, COUNT(pm.id_musica) as total
@@ -108,6 +117,8 @@ async def home_page(request: Request, db=Depends(get_db)):
 
 @app.get("/biblioteca", response_class=HTMLResponse)
 async def biblioteca_page(request: Request, db=Depends(get_db)):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
     with db.cursor() as cur:
         cur.execute("""
             SELECT DISTINCT m.id_musica, m.titulo, m.duracao, m.genero, a.nome_artista, al.nome_album
@@ -134,8 +145,37 @@ async def biblioteca_page(request: Request, db=Depends(get_db)):
         }
     )
 
+@app.get("/perfil", response_class=HTMLResponse)
+async def perfil_page(request: Request):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(request=request, name="perfil.html")
+
+@app.put("/api/usuarios/{id}/senha")
+async def alterar_senha(id: int, request: Request, body: dict = Body(...), db=Depends(get_db)):
+    if not request.session.get("user_logged_in"):
+        raise HTTPException(401, detail="Não autenticado")
+    if request.session.get("id_usuario") != id and request.session.get("perfil") != "admin":
+        raise HTTPException(403, detail="Sem permissão")
+    senha = body.get("senha", "")
+    if len(senha) < 8:
+        raise HTTPException(400, detail="Senha muito curta")
+    with db.cursor() as cur:
+        cur.execute("UPDATE usuario SET senha=%s WHERE id_usuario=%s",
+                    (pwd_context.hash(senha[:72]), id))
+        db.commit()
+    return ok({"message": "Senha alterada"})
+
+@app.get("/curtidas", response_class=HTMLResponse)
+async def curtidas_page(request: Request):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse(request=request, name="curtidas.html")
+
 @app.get("/playlist", response_class=HTMLResponse)
 async def playlist_page(request: Request, db=Depends(get_db)):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
     with db.cursor() as cur:
         cur.execute("""
             SELECT p.id_playlist, p.nome, p.publica, COUNT(pm.id_musica) as total_musicas
@@ -183,6 +223,104 @@ async def check_session(request: Request):
     if not request.session.get("user_logged_in"):
         raise HTTPException(401, detail="Sessão expirada")
     return ok({"status": "ok"})
+
+@app.post("/api/session/heartbeat")
+async def session_heartbeat(request: Request):
+    """Renova a sessão enquanto o usuário está ativo."""
+    if not request.session.get("user_logged_in"):
+        raise HTTPException(401, detail="Sessão expirada")
+    request.session["last_activity"] = datetime.now().isoformat()
+    return ok({"status": "renewed"})
+
+@app.get("/api/me")
+async def get_me(request: Request, db=Depends(get_db)):
+    if not request.session.get("user_logged_in"):
+        raise HTTPException(401, detail="Não autenticado")
+    id_usuario = request.session.get("id_usuario")
+    with db.cursor() as cur:
+        cur.execute(
+            "SELECT id_usuario, nome, email, username, cpf, is_admin, foto_perfil FROM usuario WHERE id_usuario = %s",
+            (id_usuario,)
+        )
+        user = cur.fetchone()
+    if not user:
+        raise HTTPException(404, detail="Usuário não encontrado")
+    foto_b64 = None
+    if user.get("foto_perfil"):
+        foto_b64 = "data:image/jpeg;base64," + base64.b64encode(user["foto_perfil"]).decode()
+    return ok({
+        "id_usuario": user["id_usuario"],
+        "nome": user["nome"],
+        "email": user["email"],
+        "username": user["username"],
+        "cpf": user["cpf"],
+        "is_admin": user["is_admin"],
+        "foto_perfil": foto_b64,
+    })
+
+@app.post("/api/me/foto")
+async def upload_foto(request: Request, foto: UploadFile = File(...), db=Depends(get_db)):
+    if not request.session.get("user_logged_in"):
+        raise HTTPException(401, detail="Não autenticado")
+    id_usuario = request.session.get("id_usuario")
+    conteudo = await foto.read()
+    if len(conteudo) > 5 * 1024 * 1024:
+        raise HTTPException(400, detail="Imagem muito grande (máx 5MB)")
+    with db.cursor() as cur:
+        cur.execute("UPDATE usuario SET foto_perfil = %s WHERE id_usuario = %s", (conteudo, id_usuario))
+        db.commit()
+    foto_b64 = "data:image/jpeg;base64," + base64.b64encode(conteudo).decode()
+    return ok({"foto_perfil": foto_b64})
+
+@app.get("/api/playlists/minhas")
+async def minhas_playlists(request: Request, db=Depends(get_db)):
+    if not request.session.get("user_logged_in"):
+        raise HTTPException(401, detail="Não autenticado")
+    id_usuario = request.session.get("id_usuario")
+    with db.cursor() as cur:
+        cur.execute("""
+            SELECT p.id_playlist, p.nome, p.publica, p.cor, p.data_criacao,
+                   COUNT(pm.id_musica) as total_musicas
+            FROM playlist p
+            LEFT JOIN playlist_contem_musica pm ON pm.id_playlist = p.id_playlist
+            WHERE p.id_usuario = %s
+            GROUP BY p.id_playlist
+            ORDER BY p.data_criacao DESC
+        """, (id_usuario,))
+        playlists = serialize_list(cur.fetchall())
+    return ok(playlists)
+
+@app.get("/api/deezer/search")
+async def deezer_search(q: str, limit: int = 10):
+    """Proxy para a API pública do Deezer (evita CORS no browser)."""
+    if not q or len(q.strip()) < 2:
+        return ok([])
+    async with httpx.AsyncClient(timeout=8.0) as client:
+        try:
+            r = await client.get(
+                "https://api.deezer.com/search/track",
+                params={"q": q, "limit": min(limit, 25)}
+            )
+            data = r.json()
+            tracks = []
+            for t in data.get("data", []):
+                dur_sec = t.get("duration", 0)
+                m, s = divmod(dur_sec, 60)
+                h, m = divmod(m, 60)
+                duracao_str = f"{h:02d}:{m:02d}:{s:02d}"
+                tracks.append({
+                    "deezer_id":   t["id"],
+                    "titulo":      t["title"],
+                    "artista":     t["artist"]["name"],
+                    "album":       t["album"]["title"],
+                    "duracao_seg": dur_sec,
+                    "duracao":     duracao_str,
+                    "preview_url": t.get("preview"),
+                    "capa":        t["album"].get("cover_medium"),
+                })
+            return ok(tracks)
+        except Exception as e:
+            raise HTTPException(502, detail=f"Erro ao consultar Deezer: {str(e)}")
 
 @app.post("/api/login")
 async def api_login(request: Request, body: dict = Body(...), db=Depends(get_db)):
@@ -417,12 +555,14 @@ async def criar_musica(body: dict = Body(...), db=Depends(get_db)):
     try:
         with db.cursor() as cur:
             cur.execute(
-                "INSERT INTO musica (titulo, duracao, genero, id_artista, id_album) VALUES (%s, %s, %s, %s, %s)",
-                (body["titulo"], body.get("duracao"), body.get("genero"), body["id_artista"], body["id_album"])
+                "INSERT INTO musica (titulo, duracao, genero, id_artista, id_album, preview_url, deezer_id) VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                (body["titulo"], body.get("duracao"), body.get("genero"),
+                 body["id_artista"], body["id_album"],
+                 body.get("preview_url"), body.get("deezer_id"))
             )
             db.commit()
             return ok({"id_musica": cur.lastrowid})
-    except pymysql.err.IntegrityError as e:
+    except pymysql.err.IntegrityError:
         raise HTTPException(409, detail="Música já cadastrada ou dados inválidos")
 
 
@@ -430,10 +570,11 @@ async def criar_musica(body: dict = Body(...), db=Depends(get_db)):
 async def atualizar_musica(id: int, body: dict = Body(...), db=Depends(get_db)):
     with db.cursor() as cur:
         cur.execute("""
-            UPDATE musica SET titulo=%s, duracao=%s, genero=%s, id_artista=%s, id_album=%s
+            UPDATE musica SET titulo=%s, duracao=%s, genero=%s, id_artista=%s, id_album=%s, preview_url=%s, deezer_id=%s
             WHERE id_musica=%s
         """, (body.get("titulo"), body.get("duracao"), body.get("genero"),
-              body.get("id_artista"), body.get("id_album"), id))
+              body.get("id_artista"), body.get("id_album"),
+              body.get("preview_url"), body.get("deezer_id"), id))
         if cur.rowcount == 0:
             raise HTTPException(404, detail="Música não encontrada")
         db.commit()
@@ -556,15 +697,16 @@ async def detalhe_playlist(id: int, db=Depends(get_db)):
 
 
 @app.post("/api/playlists")
-async def criar_playlist(body: dict = Body(...), db=Depends(get_db)):
+async def criar_playlist(request: Request, body: dict = Body(...), db=Depends(get_db)):
     nome = body.get("nome", "").strip()
-    id_usuario = body.get("id_usuario")
+    # usa id_usuario do body (admin) ou da sessão (usuário normal)
+    id_usuario = body.get("id_usuario") or request.session.get("id_usuario")
     if not nome or not id_usuario:
-        raise HTTPException(400, detail="nome e id_usuario são obrigatórios")
+        raise HTTPException(400, detail="nome é obrigatório e usuário deve estar logado")
     with db.cursor() as cur:
         cur.execute(
-            "INSERT INTO playlist (nome, publica, id_usuario) VALUES (%s, %s, %s)",
-            (nome, body.get("publica", 0), id_usuario)
+            "INSERT INTO playlist (nome, publica, id_usuario, cor) VALUES (%s, %s, %s, %s)",
+            (nome, body.get("publica", 0), id_usuario, body.get("cor", "#8ab8a8"))
         )
         db.commit()
         return ok({"id_playlist": cur.lastrowid})
@@ -573,8 +715,8 @@ async def criar_playlist(body: dict = Body(...), db=Depends(get_db)):
 @app.put("/api/playlists/{id}")
 async def atualizar_playlist(id: int, body: dict = Body(...), db=Depends(get_db)):
     with db.cursor() as cur:
-        cur.execute("UPDATE playlist SET nome=%s, publica=%s WHERE id_playlist=%s",
-                    (body.get("nome"), body.get("publica", 0), id))
+        cur.execute("UPDATE playlist SET nome=%s, publica=%s, cor=%s WHERE id_playlist=%s",
+                    (body.get("nome"), body.get("publica", 0), body.get("cor", "#8ab8a8"), id))
         if cur.rowcount == 0:
             raise HTTPException(404, detail="Playlist não encontrada")
         db.commit()

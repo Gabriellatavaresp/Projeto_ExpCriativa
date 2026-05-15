@@ -138,6 +138,7 @@
       const cpf             = document.getElementById('cpf').value.replace(/\D/g,'');
       const email           = document.getElementById('email').value.trim();
       const username        = document.getElementById('username').value.trim();
+
       const password        = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
 
@@ -155,6 +156,7 @@
       if (username.length < 3) {
         setError('username', 'usernameError', true); valid = false;
       }
+
       const pwdErrors = validatePasswordDetailed(password);
       let hasPwdError = false;
       for (let key in pwdErrors) {
@@ -166,7 +168,6 @@
         }
       }
       if (hasPwdError) valid = false;
-
       // Função auxiliar
       function capitalize(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
       if (confirmPassword !== password) {

@@ -6,3 +6,4 @@ python-multipart~=0.0.20
 passlib~=1.7.4
 bcrypt==3.2.2
 starlette[full]
+httpx~=0.27.0

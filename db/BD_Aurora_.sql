@@ -49,6 +49,8 @@ CREATE TABLE IF NOT EXISTS `AuroraStreaming`.`musica` (
   `titulo` VARCHAR(200) NOT NULL,
   `duracao` TIME NULL DEFAULT NULL,
   `genero` VARCHAR(50) NULL DEFAULT NULL,
+  `preview_url` VARCHAR(500) NULL DEFAULT NULL,
+  `deezer_id` BIGINT NULL DEFAULT NULL,
   `id_artista` INT NOT NULL,
   `id_album` INT NOT NULL,
   PRIMARY KEY (`id_musica`),
