@@ -79,6 +79,10 @@ async function init() {
   allSongs = (j2.data||[]).map(m=>({
     id: m.id_musica, title: m.titulo, artist: m.nome_artista,
     album: m.nome_album, dur: parseDur(m.duracao), img: null,
+    preview_url: m.preview_url || null,
+    // compat com player.js global
+    id_musica: m.id_musica, titulo: m.titulo, nome_artista: m.nome_artista,
+    duracao: m.duracao,
   }));
 
   if (activePlId) await loadPlaylist(activePlId);
@@ -102,11 +106,16 @@ async function loadPlaylist(id) {
   activePl = {
     id: pl.id_playlist, name: pl.nome, desc: pl.descricao||'',
     color: pl.cor||'#6b9997', publica: pl.publica,
+    ownerId: pl.id_usuario, ownerName: pl.nome_usuario||'Aurora',
   };
   songs = (pl.musicas||[]).map(m=>({
     id: m.id_musica, title: m.titulo, artist: m.nome_artista,
     album: m.nome_album, dur: parseDur(m.duracao),
     added: m.data_adicionada||'', img: null,
+    preview_url: m.preview_url || null,
+    // compat com player.js global
+    id_musica: m.id_musica, titulo: m.titulo, nome_artista: m.nome_artista,
+    duracao: m.duracao,
   }));
   songFilter=''; poolFilter='';
   const sfi = document.getElementById('songFilterInput');
@@ -115,20 +124,22 @@ async function loadPlaylist(id) {
   if(sfi) sfi.value='';
   if(rsi) rsi.value='';
   if(ami) ami.value='';
-  // buscar previews Deezer para as músicas da playlist
-  fetchPreviews(songs);
+  // buscar previews Deezer apenas para músicas sem preview_url no BD
+  const sem = songs.filter(s => !s.preview_url);
+  if (sem.length) fetchPreviews(sem);
   renderAll();
 }
 
 async function fetchPreviews(songList) {
   for (const s of songList) {
-    if (previewMap[s.id]) continue;
+    if (s.preview_url || previewMap[s.id]) continue;
     try {
       const q = encodeURIComponent(`${s.title} ${s.artist}`);
       const r = await fetch(`/api/deezer/search?q=${q}&limit=1`);
       const j = await r.json();
       if (j.data && j.data[0] && j.data[0].preview_url) {
         previewMap[s.id] = j.data[0].preview_url;
+        s.preview_url = j.data[0].preview_url; // guarda no objeto
       }
     } catch(_) {}
   }
@@ -136,12 +147,21 @@ async function fetchPreviews(songList) {
 
 // ── Audio preview ───────────────────────────────────────────────────────────
 function playAudioPreview(songId) {
-  const url = previewMap[songId];
+  const song = songs.find(s=>s.id===songId) || allSongs.find(s=>s.id===songId);
+  const url = (song && song.preview_url) || previewMap[songId];
   if (!url) { toast('Preview não disponível para esta música'); return; }
   if (audioEl) { audioEl.pause(); audioEl = null; }
   audioEl = new Audio(url);
   audioEl.volume = 0.7;
   audioEl.play().catch(()=>{});
+  audioEl.addEventListener('timeupdate', () => {
+    const dur = audioEl.duration || 30;
+    const pct = (audioEl.currentTime / dur) * 100;
+    const fill = document.getElementById('npFill');
+    const cur  = document.getElementById('npCur');
+    if (fill) fill.style.width = pct + '%';
+    if (cur)  cur.textContent = fmt(Math.floor(audioEl.currentTime));
+  });
   audioEl.addEventListener('ended', ()=>{ npPlaying=false; setMusicPlaying(false); renderNowPlaying(); renderSongs(); });
   setMusicPlaying(true);
 }
@@ -170,18 +190,34 @@ function renderSidebar() {
 
 function renderHero() {
   if (!activePl) return;
-  const pl=activePl;
-  document.title=`Aurora — ${pl.name}`;
-  document.getElementById('barTitle').textContent=pl.name;
-  document.getElementById('heroType').textContent='Playlist';
-  document.getElementById('heroName').textContent=pl.name;
-  document.getElementById('heroDesc').textContent=pl.desc||'Clique para adicionar uma descrição…';
-  document.getElementById('heroDesc').style.color=pl.desc?'':'var(--text-faint)';
-  document.getElementById('heroCover').style.background=`linear-gradient(135deg,${pl.color}99,${pl.color}cc)`;
-  document.getElementById('heroCover').src='';
-  document.getElementById('heroBg').style.background=`linear-gradient(to bottom,${pl.color}88 0%,var(--bg) 100%)`;
-  document.getElementById('heroMeta').innerHTML=`<strong>Você</strong><span class="dot">·</span>${songs.length} músicas<span class="dot">·</span>${totalDur(songs)}`;
-  document.getElementById('shuffleBtn').classList.toggle('active',shuffleOn);
+  const pl = activePl;
+  const isOwner = pl.ownerId === currentUserId;
+
+  document.title = `Aurora — ${pl.name}`;
+  document.getElementById('barTitle').textContent = pl.name;
+  document.getElementById('heroType').textContent = 'Playlist';
+  document.getElementById('heroName').textContent = pl.name;
+  document.getElementById('heroDesc').textContent = pl.desc || (isOwner ? 'Clique para adicionar uma descrição…' : '');
+  document.getElementById('heroDesc').style.color = pl.desc ? '' : 'var(--text-faint)';
+  document.getElementById('heroCover').style.background = `linear-gradient(135deg,${pl.color}99,${pl.color}cc)`;
+  document.getElementById('heroCover').src = '';
+  document.getElementById('heroBg').style.background = `linear-gradient(to bottom,${pl.color}88 0%,var(--bg) 100%)`;
+
+  const metaAutor = isOwner ? '<strong>Você</strong>' : `<strong>${esc(pl.ownerName)}</strong>`;
+  document.getElementById('heroMeta').innerHTML = `${metaAutor}<span class="dot">·</span>${songs.length} músicas<span class="dot">·</span>${totalDur(songs)}`;
+  document.getElementById('shuffleBtn').classList.toggle('active', shuffleOn);
+
+  // edição só para dono
+  document.getElementById('heroName').onclick = isOwner ? startEditName : null;
+  document.getElementById('heroName').style.cursor = isOwner ? 'text' : 'default';
+  document.getElementById('heroDesc').onclick = isOwner ? startEditDesc : null;
+  document.getElementById('heroDesc').style.cursor = isOwner ? 'text' : 'default';
+  document.querySelector('.cover-wrap').onclick = isOwner ? openEditModal : null;
+  document.querySelector('.cover-overlay').style.display = isOwner ? '' : 'none';
+
+  // painel de adicionar músicas visível só para dono
+  const pool = document.getElementById('poolPanel');
+  if (pool) pool.style.display = isOwner ? '' : 'none';
 }
 
 function renderSongs() {
@@ -205,13 +241,14 @@ function renderSongs() {
   const noSongs=document.getElementById('noSongs');
   if(list.length===0){tbody.innerHTML='';noSongs.style.display='block';return;}
   noSongs.style.display='none';
+  const isOwner = activePl && activePl.ownerId === currentUserId;
   tbody.innerHTML=list.map((s,i)=>{
     const isPlaying=s.id===playingId;
     const liked=likedIds.has(s.id);
     const hasPreview=!!previewMap[s.id];
     return `
       <tr class="song-row ${isPlaying?'playing':''}" data-id="${s.id}">
-        <td class="td-drag"><div class="drag-handle"><svg viewBox="0 0 24 24"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg></div></td>
+        <td class="td-drag">${isOwner?'<div class="drag-handle"><svg viewBox="0 0 24 24"><line x1="9" y1="5" x2="9" y2="19"/><line x1="15" y1="5" x2="15" y2="19"/></svg></div>':''}</td>
         <td class="td-num">
           <span class="track-num">${i+1}</span>
           <div class="play-icon" onclick="playSong(${s.id})" title="${hasPreview?'Preview 30s':'Sem preview'}">
@@ -235,7 +272,7 @@ function renderSongs() {
         <td class="td-date c-date">${s.added?fmtDate(s.added):'—'}</td>
         <td class="td-like"><button class="like-btn ${liked?'liked':''}" onclick="toggleLike(${s.id})"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button></td>
         <td class="td-dur">${fmt(s.dur)}</td>
-        <td class="td-more"><button class="more-btn" onclick="openCtxMenu(event,${s.id})"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button></td>
+        <td class="td-more">${isOwner?`<button class="more-btn" onclick="openCtxMenu(event,${s.id})"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>`:''}</td>
       </tr>`;
   }).join('');
   ['num','title','album','date','duration'].forEach(c=>{

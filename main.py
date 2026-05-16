@@ -521,6 +521,7 @@ async def listar_musicas(db=Depends(get_db)):
     with db.cursor() as cur:
         cur.execute("""
             SELECT m.id_musica, m.titulo, m.duracao, m.genero,
+                   m.preview_url, m.deezer_id,
                    a.id_artista, a.nome_artista,
                    al.id_album, al.nome_album
             FROM musica m
@@ -672,6 +673,41 @@ async def listar_playlists(db=Depends(get_db)):
         return ok(serialize_list(cur.fetchall()))
 
 
+@app.get("/api/playlists/admin/salvos")
+async def admin_salvos(request: Request, db=Depends(get_db)):
+    """Retorna IDs das playlists do admin que o usuário logado já salvou."""
+    if not request.session.get("user_logged_in"):
+        raise HTTPException(401, detail="Não autenticado")
+    id_usuario = request.session.get("id_usuario")
+    with db.cursor() as cur:
+        cur.execute("""
+            SELECT source_playlist_id FROM playlist
+            WHERE id_usuario = %s AND source_playlist_id IS NOT NULL
+        """, (id_usuario,))
+        ids = [row["source_playlist_id"] for row in cur.fetchall()]
+    return ok(ids)
+
+
+@app.get("/api/playlists/admin")
+async def playlists_admin(request: Request, db=Depends(get_db)):
+    """Retorna playlists públicas criadas por admins."""
+    if not request.session.get("user_logged_in"):
+        raise HTTPException(401, detail="Não autenticado")
+    with db.cursor() as cur:
+        cur.execute("""
+            SELECT p.id_playlist, p.nome, p.publica, p.cor, p.data_criacao,
+                   COUNT(pm.id_musica) as total_musicas
+            FROM playlist p
+            JOIN usuario u ON u.id_usuario = p.id_usuario
+            LEFT JOIN playlist_contem_musica pm ON pm.id_playlist = p.id_playlist
+            WHERE u.is_admin = 1 AND p.publica = 1
+            GROUP BY p.id_playlist
+            ORDER BY p.data_criacao DESC
+        """)
+        playlists = serialize_list(cur.fetchall())
+    return ok(playlists)
+
+
 @app.get("/api/playlists/{id}")
 async def detalhe_playlist(id: int, db=Depends(get_db)):
     with db.cursor() as cur:
@@ -685,6 +721,7 @@ async def detalhe_playlist(id: int, db=Depends(get_db)):
             raise HTTPException(404, detail="Playlist não encontrada")
         cur.execute("""
             SELECT m.id_musica, m.titulo, m.duracao, m.genero,
+                   m.preview_url, m.deezer_id,
                    a.nome_artista, al.nome_album
             FROM playlist_contem_musica pm
             JOIN musica m ON m.id_musica = pm.id_musica
@@ -694,6 +731,31 @@ async def detalhe_playlist(id: int, db=Depends(get_db)):
         """, (id,))
         pl["musicas"] = serialize_list(cur.fetchall())
     return ok(serialize_row(pl))
+
+
+@app.post("/api/playlists/{id}/salvar")
+async def salvar_playlist_admin(id: int, request: Request, db=Depends(get_db)):
+    """Copia uma playlist do admin para a biblioteca do usuário logado."""
+    if not request.session.get("user_logged_in"):
+        raise HTTPException(401, detail="Não autenticado")
+    id_usuario = request.session.get("id_usuario")
+    with db.cursor() as cur:
+        cur.execute("SELECT nome, cor FROM playlist WHERE id_playlist = %s", (id,))
+        original = cur.fetchone()
+        if not original:
+            raise HTTPException(404, detail="Playlist não encontrada")
+        nome_copia = f"{original['nome']} (salva)"
+        cur.execute(
+            "INSERT INTO playlist (nome, publica, id_usuario, cor, source_playlist_id) VALUES (%s, 0, %s, %s, %s)",
+            (nome_copia, id_usuario, original['cor'], id)
+        )
+        nova_id = cur.lastrowid
+        cur.execute("""
+            INSERT INTO playlist_contem_musica (id_playlist, id_musica)
+            SELECT %s, id_musica FROM playlist_contem_musica WHERE id_playlist = %s
+        """, (nova_id, id))
+        db.commit()
+    return ok({"id_playlist": nova_id, "message": "Playlist salva na sua biblioteca!"})
 
 
 @app.post("/api/playlists")
@@ -763,7 +825,8 @@ async def remover_musica_playlist(id: int, id_musica: int, db=Depends(get_db)):
 async def listar_curtidas(id_usuario: int, db=Depends(get_db)):
     with db.cursor() as cur:
         cur.execute("""
-            SELECT m.id_musica, m.titulo, m.duracao, a.nome_artista, c.data_curtida
+            SELECT m.id_musica, m.titulo, m.duracao, m.preview_url,
+                   a.nome_artista, c.data_curtida
             FROM curtida c
             JOIN musica m ON m.id_musica = c.id_musica
             JOIN artista a ON a.id_artista = m.id_artista
@@ -798,7 +861,8 @@ async def descurtir(id_usuario: int, id_musica: int, db=Depends(get_db)):
 async def listar_historico(id_usuario: int, db=Depends(get_db)):
     with db.cursor() as cur:
         cur.execute("""
-            SELECT h.id, m.id_musica, m.titulo, m.duracao, a.nome_artista, h.data_reproducao
+            SELECT h.id, m.id_musica, m.titulo, m.duracao, m.preview_url,
+                   a.nome_artista, h.data_reproducao
             FROM historico_reproducao h
             JOIN musica m ON m.id_musica = h.id_musica
             JOIN artista a ON a.id_artista = m.id_artista

@@ -14,63 +14,7 @@ const obs = new IntersectionObserver((entries) => {
 }, { threshold: 0.1 });
 document.querySelectorAll('[data-reveal]').forEach(el => obs.observe(el));
 
-// ── Player ────────────────────────────────────────────────────────────────
-let tracks = [], cur = 0, playing = false, elapsed = 0, timer = null;
-let currentAudio = null;
-
-function setTrack(i) {
-  cur = i; elapsed = 0;
-  const t = tracks[cur];
-  if (!t) return;
-  document.getElementById('nowTitle').textContent  = t.titulo || t.title;
-  document.getElementById('nowArtist').textContent = t.nome_artista || t.artist || '';
-  document.getElementById('totalTime').textContent = t.duracao || t.dur || '0:00';
-  document.getElementById('progressFill').style.width = '0%';
-  document.getElementById('curTime').textContent = '0:00';
-
-  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-  if (t.preview_url) {
-    currentAudio = new Audio(t.preview_url);
-    currentAudio.volume = 0.7;
-    if (playing) currentAudio.play().catch(() => {});
-    currentAudio.ontimeupdate = () => {
-      const pct = (currentAudio.currentTime / (currentAudio.duration || 30)) * 100;
-      document.getElementById('progressFill').style.width = pct + '%';
-      const s = Math.floor(currentAudio.currentTime);
-      document.getElementById('curTime').textContent = Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
-    };
-    currentAudio.onended = () => setTrack((cur + 1) % tracks.length);
-  }
-  setMusicPlaying(playing);
-}
-
-document.getElementById('playBtn').onclick = function () {
-  playing = !playing;
-  document.getElementById('playIcon').innerHTML = playing
-    ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'
-    : '<path d="M8 5v14l11-7z"/>';
-  if (currentAudio) {
-    playing ? currentAudio.play().catch(() => {}) : currentAudio.pause();
-  }
-  setMusicPlaying(playing);
-};
-
-document.getElementById('nextBtn').onclick = () => { playing = true; setTrack((cur + 1) % tracks.length); };
-document.getElementById('prevBtn').onclick = () => { playing = true; setTrack((cur - 1 + tracks.length) % tracks.length); };
-
-document.getElementById('heartBtn').onclick = async function () {
-  const t = tracks[cur];
-  if (!t || !t.id_musica) return;
-  const idUsuario = window._userId;
-  if (!idUsuario) return;
-  this.classList.toggle('liked');
-  const liked = this.classList.contains('liked');
-  if (liked) {
-    await fetch('/api/curtidas', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ id_usuario: idUsuario, id_musica: t.id_musica }) });
-  } else {
-    await fetch(`/api/curtidas/${idUsuario}/${t.id_musica}`, { method: 'DELETE' });
-  }
-};
+// ── Player — delegado ao player.js global ────────────────────────────────
 
 // ── Sidebar mobile ────────────────────────────────────────────────────────
 const sidebar = document.getElementById('sidebar');
@@ -96,7 +40,7 @@ async function loadSidebarPlaylists(idUsuario) {
     return;
   }
   list.innerHTML = data.slice(0, 6).map((p, i) => `
-    <a href="/playlist" class="playlist-item">
+    <a href="/playlist?id=${p.id_playlist}" class="playlist-item">
       <div class="playlist-thumb ${grad(i)}" style="background:linear-gradient(135deg,${esc(p.cor||'#6b9997')}88,${esc(p.cor||'#6b9997')}cc)"></div>
       <div class="playlist-info">
         <span class="playlist-name">${esc(p.nome)}</span>
@@ -112,10 +56,56 @@ async function loadQuickCards() {
   const grid = document.getElementById('quickGrid');
   if (!grid || !data || data.length === 0) return;
   grid.innerHTML = data.slice(0, 6).map((p, i) => `
-    <a href="/playlist" class="quick-card">
+    <a href="/playlist?id=${p.id_playlist}" class="quick-card">
       <div class="quick-thumb ${grad(i)}" style="background:linear-gradient(135deg,${esc(p.cor||'#6b9997')}88,${esc(p.cor||'#6b9997')}cc)"></div>
       <span>${esc(p.nome)}</span>
     </a>`).join('');
+}
+
+async function loadAdminPlaylists() {
+  const [resPlaylists, resSalvos] = await Promise.all([
+    fetch('/api/playlists/admin').catch(() => null),
+    fetch('/api/playlists/admin/salvos').catch(() => null),
+  ]);
+  const row = document.getElementById('adminPlaylistsRow');
+  if (!resPlaylists || !resPlaylists.ok || !row) return;
+  const { data } = await resPlaylists.json();
+  const salvos = new Set(resSalvos?.ok ? (await resSalvos.json()).data || [] : []);
+  if (!data || data.length === 0) {
+    row.innerHTML = '<p style="color:#666;font-size:0.9rem">Nenhuma playlist do catálogo ainda.</p>';
+    return;
+  }
+  row.innerHTML = data.map((p, i) => {
+    const jaSalva = salvos.has(p.id_playlist);
+    const btnStyle = jaSalva
+      ? 'background:rgba(16,185,129,0.15);border:1px solid #10B981;color:#10B981;cursor:default'
+      : 'background:rgba(107,153,151,0.15);border:1px solid #6b9997;color:#6b9997;cursor:pointer';
+    return `
+    <div class="music-card" style="position:relative">
+      <a href="/playlist?id=${p.id_playlist}" style="text-decoration:none;color:inherit;display:block">
+        <div class="card-cover ${grad(i)}" style="background:linear-gradient(135deg,${esc(p.cor||'#6b9997')}88,${esc(p.cor||'#6b9997')}cc)">${playSvg}</div>
+        <h4>${esc(p.nome)}</h4>
+        <p>${p.total_musicas||0} músicas</p>
+      </a>
+      <button id="savebtn-${p.id_playlist}"
+        onclick="${jaSalva ? '' : `salvarPlaylistAdmin(${p.id_playlist}, this)`}"
+        style="margin-top:8px;width:100%;border-radius:8px;font-size:0.8rem;padding:6px 0;border:0;transition:background .2s;${btnStyle}">
+        ${jaSalva ? '✓ Salva na biblioteca' : '+ Salvar na biblioteca'}
+      </button>
+    </div>`; }).join('');
+}
+
+async function salvarPlaylistAdmin(id, btn) {
+  btn.onclick = null;
+  btn.textContent = 'Salvando…';
+  const res = await fetch(`/api/playlists/${id}/salvar`, { method: 'POST' }).catch(() => null);
+  if (res && res.ok) {
+    btn.textContent = '✓ Salva na biblioteca';
+    btn.style.cssText = 'margin-top:8px;width:100%;border-radius:8px;font-size:0.8rem;padding:6px 0;border:0;background:rgba(16,185,129,0.15);border:1px solid #10B981;color:#10B981;cursor:default';
+  } else {
+    btn.textContent = '+ Salvar na biblioteca';
+    btn.onclick = () => salvarPlaylistAdmin(id, btn);
+  }
 }
 
 async function loadPlaylists() {
@@ -129,7 +119,7 @@ async function loadPlaylists() {
     return;
   }
   row.innerHTML = data.slice(0, 5).map((p, i) => `
-    <a href="/playlist" class="music-card">
+    <a href="/playlist?id=${p.id_playlist}" class="music-card">
       <div class="card-cover ${grad(i)}" style="background:linear-gradient(135deg,${esc(p.cor||'#6b9997')}88,${esc(p.cor||'#6b9997')}cc)">${playSvg}</div>
       <h4>${esc(p.nome)}</h4>
       <p>${p.total_musicas||0} músicas</p>
@@ -171,13 +161,7 @@ async function loadArtists() {
     </div>`).join('');
 }
 
-function playTrack(m) {
-  if (!tracks.find(t => t.id_musica === m.id_musica)) tracks.push(m);
-  const idx = tracks.findIndex(t => t.id_musica === m.id_musica);
-  playing = true;
-  document.getElementById('playIcon').innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
-  setTrack(idx);
-}
+// playTrack é fornecido globalmente por player.js
 
 // ── Avatar / Perfil ───────────────────────────────────────────────────────
 async function loadUserProfile() {
@@ -186,6 +170,14 @@ async function loadUserProfile() {
   if (res.status === 401) { window.location.href = '/login'; return; }
   const { data: user } = await res.json();
   window._userId = user.id_usuario;
+
+  // carregar curtidas para o player global
+  fetch(`/api/curtidas/${user.id_usuario}`)
+    .then(r => r.json())
+    .then(({ data }) => {
+      if (typeof window.setPlayerLikedIds === 'function')
+        window.setPlayerLikedIds((data || []).map(c => c.id_musica));
+    }).catch(() => {});
 
   const avatarEl = document.getElementById('userAvatar');
   if (user.foto_perfil) {
@@ -200,47 +192,16 @@ async function loadUserProfile() {
     if (al) al.style.display = 'none';
   }
 
-  // upload de foto
-  const menu = document.getElementById('avatarMenu');
-  if (menu && !document.getElementById('fotoUploadBtn')) {
-    const lbl = document.createElement('label');
-    lbl.id = 'fotoUploadBtn';
-    lbl.style.cssText = 'display:flex;align-items:center;gap:8px;padding:10px 12px;color:#fff;border-radius:8px;font-size:0.9rem;cursor:pointer;';
-    lbl.innerHTML = '📷 Alterar foto';
-    lbl.onmouseover = () => lbl.style.background = '#2a2a3e';
-    lbl.onmouseout  = () => lbl.style.background = 'transparent';
-    const fi = document.createElement('input');
-    fi.type = 'file'; fi.accept = 'image/*'; fi.style.display = 'none';
-    fi.onchange = uploadFoto;
-    lbl.appendChild(fi);
-    lbl.onclick = () => fi.click();
-    const sair = menu.querySelector('a[href="/logout"]');
-    sair ? menu.insertBefore(lbl, sair) : menu.appendChild(lbl);
-  }
 
   // carregar seções que dependem do usuário
   loadSidebarPlaylists();
   loadQuickCards();
+  loadAdminPlaylists();
   loadPlaylists();
   loadRecentlyPlayed(user.id_usuario);
   loadArtists();
 }
 
-async function uploadFoto(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const form = new FormData();
-  form.append('foto', file);
-  const res  = await fetch('/api/me/foto', { method: 'POST', body: form }).catch(() => null);
-  if (!res) return;
-  const json = await res.json();
-  if (res.ok && json.data?.foto_perfil) {
-    const el = document.getElementById('userAvatar');
-    el.innerHTML = `<img src="${json.data.foto_perfil}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
-    el.style.padding = '0';
-  }
-  document.getElementById('avatarMenu').style.display = 'none';
-}
 
 function toggleAvatarMenu() {
   const menu = document.getElementById('avatarMenu');
@@ -325,16 +286,13 @@ function playFromSearch(m) {
   searchDropdown.style.display = 'none';
   searchInput.value = '';
   const track = {
-    id_musica: m.deezer_id,
+    id_musica: m.deezer_id || m.id_musica,
     titulo: m.titulo,
-    nome_artista: m.artista,
+    nome_artista: m.artista || m.nome_artista,
     duracao: m.duracao,
     preview_url: m.preview_url,
   };
-  tracks.push(track);
-  playing = true;
-  document.getElementById('playIcon').innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
-  setTrack(tracks.length - 1);
+  if (typeof window.playTrack === 'function') window.playTrack(track);
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────

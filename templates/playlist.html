@@ -9,6 +9,12 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Syne:wght@600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/playlist.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <style>
+    /* A página de playlist tem seu próprio player — ocultar o global */
+    .aurora-player-bar { display: none !important; }
+    /* Remover padding extra do player global nas áreas de scroll */
+    .scroll-area { padding-bottom: 0 !important; }
+  </style>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
   <script src="/static/js/aurora_swal.js"></script>
 </head>
@@ -304,10 +310,12 @@
 
  
   <script src="/static/js/session_guard.js"></script>
+  <script src="/static/js/player.js"></script>
   <script src="/static/js/playlist.js"></script>
   <script>
     fetch('/api/me').then(r => r.json()).then(d => {
       const u = d.data;
+      window._userId = u.id_usuario;
       document.getElementById('sidebarNomeUsuario').textContent = u.nome + (u.is_admin ? ' (admin)' : '');
     });
   </script>

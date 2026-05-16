@@ -99,33 +99,53 @@ USUARIOS = [
     ("Ana Costa",          "ana@email.com",       "senha1234", 1, "567.890.123-44", "anacosta",    0),
 ]
 
-# (nome, publica, idx_usuario)
+# (nome, publica, idx_usuario, cor)
 # idx_usuario: 0 = admin, 1 = gabi, 2 = maria, etc.
 PLAYLISTS = [
-    ("Mix Diário",         1, 0),   # admin
-    ("Chill Vibes",        1, 0),   # admin
-    ("Rock Clássico",      1, 0),   # admin
-    ("Favoritas",          0, 1),   # gabi
-    ("Workout",            1, 1),   # gabi
-    ("Concentração",       1, 2),   # maria
-    ("Noite Eletrônica",   1, 3),   # pedro
-    ("Indie Selection",    1, 4),   # ana
-    ("Acústico",           1, 1),   # gabi
-    ("Hip-Hop Essentials", 1, 0),   # admin
+    # ── Playlists do admin (públicas — aparecem na home dos users) ──
+    ("Mix Diário",          1, 0, "#6b9997"),   # 0
+    ("Chill Vibes",         1, 0, "#4e7f82"),   # 1
+    ("Rock Clássico",       1, 0, "#8b4513"),   # 2
+    ("Hip-Hop Essentials",  1, 0, "#2d1b69"),   # 3
+    ("Para Trabalhar",      1, 0, "#1a3a5c"),   # 4
+    ("Retrô Anos 70",       1, 0, "#7a5c1a"),   # 5
+    ("Acordar Bem",         1, 0, "#b05a00"),   # 6
+    ("Momento Relaxar",     1, 0, "#1a5c3a"),   # 7
+    ("Pré-Jogo",            1, 0, "#7a1a1a"),   # 8
+    ("Viagem Psicodélica",  1, 0, "#3a1a6a"),   # 9
+    ("Baladas Eternas",     1, 0, "#6a1a3a"),   # 10
+    ("Indie do Bem",        1, 0, "#2a5a2a"),   # 11
+    # ── Playlists de usuários comuns ──
+    ("Favoritas",           0, 1, "#6b9997"),   # 12 - gabi
+    ("Workout",             1, 1, "#c0392b"),   # 13 - gabi
+    ("Concentração",        1, 2, "#2c3e50"),   # 14 - maria
+    ("Noite Eletrônica",    1, 3, "#1a0533"),   # 15 - pedro
+    ("Indie Selection",     1, 4, "#27ae60"),   # 16 - ana
+    ("Acústico",            1, 1, "#7f5539"),   # 17 - gabi
 ]
 
 # Índices de músicas por playlist (baseados em MUSICAS)
 PLAYLIST_SONGS = {
-    0: [0,1,2,3,4,17,18,24,27,30],        # Mix Diário
-    1: [1,7,8,18,19,24,25,31,32,41,42],   # Chill Vibes
-    2: [0,3,4,13,14,15,17,21,22,30,31],   # Rock Clássico
-    3: [0,2,17,18,19,24,30,31,32],         # Favoritas
-    4: [3,4,13,14,15,21,44,45,47,48],      # Workout
-    5: [6,7,8,30,31,32,33,34,35,36],       # Concentração
-    6: [37,38,39,40,34,35],                # Noite Eletrônica
-    7: [44,45,46],                         # Indie Selection
-    8: [1,2,18,19,24,25,26],               # Acústico
-    9: [47,48,49],                         # Hip-Hop Essentials
+    # ── Admin ──
+    0:  [0,1,2,3,4,17,18,24,27,30],         # Mix Diário       — variedade geral
+    1:  [1,7,8,18,19,24,25,31,32,41,42],    # Chill Vibes      — relaxado/tranquilo
+    2:  [0,3,4,13,14,15,17,21,22,30,31],    # Rock Clássico    — grandes clássicos do rock
+    3:  [47,48,49],                          # Hip-Hop Essentials
+    4:  [6,7,8,31,32,33,34,35,36,40],       # Para Trabalhar   — foco/ambient
+    5:  [0,6,7,9,13,16,17,21,24,27],        # Retrô Anos 70    — nostalgia dos 70s
+    6:  [2,3,4,18,20,24,37,39,41,42],       # Acordar Bem      — animado/energizante
+    7:  [1,8,9,19,25,26,32,43],             # Momento Relaxar  — lento/suave
+    8:  [3,4,14,15,23,44,45,47,48],         # Pré-Jogo         — hype/intenso
+    9:  [30,31,34,35,36,40,41,43],          # Viagem Psicodélica
+    10: [1,19,25,26,31,32,42,43],           # Baladas Eternas  — baladas atemporais
+    11: [27,28,29,44,45,46,41,42],          # Indie do Bem     — indie/alternativo
+    # ── Usuários ──
+    12: [0,2,17,18,19,24,30,31,32],         # Favoritas (gabi)
+    13: [3,4,13,14,15,21,44,45,47,48],      # Workout (gabi)
+    14: [6,7,8,30,31,32,33,34,35,36],       # Concentração (maria)
+    15: [37,38,39,40,34,35],                # Noite Eletrônica (pedro)
+    16: [44,45,46],                         # Indie Selection (ana)
+    17: [1,2,18,19,24,25,26],               # Acústico (gabi)
 }
 
 
@@ -197,10 +217,10 @@ def init_if_empty():
             ids_usr = _get_ids(cur, "usuario", "id_usuario")
 
             # Playlists
-            for nome, publica, idx_usr in PLAYLISTS:
+            for nome, publica, idx_usr, cor in PLAYLISTS:
                 cur.execute(
-                    "INSERT INTO playlist (nome, publica, id_usuario) VALUES (%s,%s,%s)",
-                    (nome, publica, ids_usr[idx_usr])
+                    "INSERT INTO playlist (nome, publica, id_usuario, cor) VALUES (%s,%s,%s,%s)",
+                    (nome, publica, ids_usr[idx_usr], cor)
                 )
             conn.commit()
             ids_pl = _get_ids(cur, "playlist", "id_playlist")

@@ -102,6 +102,7 @@ CREATE TABLE IF NOT EXISTS `AuroraStreaming`.`playlist` (
   `cor` VARCHAR(7) NULL DEFAULT '#8ab8a8',
   `data_criacao` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
   `id_usuario` INT NOT NULL,
+  `source_playlist_id` INT NULL DEFAULT NULL,
   PRIMARY KEY (`id_playlist`),
   INDEX `id_usuario` (`id_usuario` ASC) VISIBLE,
   CONSTRAINT `playlist_ibfk_1`

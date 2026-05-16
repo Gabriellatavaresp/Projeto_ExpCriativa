@@ -87,10 +87,13 @@
   </div>
 
   <script src="/static/js/session_guard.js"></script>
+  <script src="/static/js/player.js"></script>
   <script src="/static/js/curtidas.js"></script>
   <script>
     fetch('/api/me').then(r => r.json()).then(d => {
-      document.getElementById('sidebarNomeUsuario').textContent = d.data.nome;
+      const u = d.data;
+      window._userId = u.id_usuario;
+      document.getElementById('sidebarNomeUsuario').textContent = u.nome;
     });
   </script>
 </body>
