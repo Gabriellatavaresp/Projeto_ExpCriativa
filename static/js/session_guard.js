@@ -9,7 +9,7 @@
  *  - A cada HEARTBEAT_MS de atividade → POST /api/session/heartbeat
  */
 
-const TIMEOUT_MS   = 60_000;  // 1 minuto de inatividade → logout
+const TIMEOUT_MS   = 10000_000;  // 1 minuto de inatividade → logout
 const HEARTBEAT_MS = 30_000;  // heartbeat a cada 30s
 
 let _inactivityTimer = null;

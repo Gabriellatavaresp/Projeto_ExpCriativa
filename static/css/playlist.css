@@ -60,6 +60,7 @@ html, body { height: 100%; background: linear-gradient(160deg, #071a14 0%, #0b1a
 .sidebar-nav { padding:0 10px;display:flex;flex-direction:column;gap:2px;flex-shrink:0; }
 .nav-btn { display:flex;align-items:center;gap:13px;padding:10px 12px;border-radius:var(--r-sm);cursor:pointer;color:var(--text-muted);font-size:13px;font-weight:500;border:none;background:none;width:100%;text-align:left;font-family:var(--font);transition:background .2s,color .2s; }
 .nav-btn:hover { background:var(--glass-bg);color:var(--text); }
+.nav-btn.active { background:rgba(37,99,235,.15);color:var(--mint);font-weight:700; }
 .nav-btn svg { width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
 
 .sidebar-divider { height:1px;background:var(--glass-border);margin:10px 20px;flex-shrink:0; }
@@ -480,10 +481,65 @@ html, body { height: 100%; background: linear-gradient(160deg, #071a14 0%, #0b1a
 /* ═══════════════════════════════════════════════════════════
    RESPONSIVE
 ═══════════════════════════════════════════════════════════ */
+/* ── Tablet ── */
+@media(max-width:900px) {
+  .cover-img { width:180px; height:180px; }
+  .hero-content { gap:20px; }
+  .pl-name { font-size:clamp(1.4rem,4vw,2rem); }
+}
+
+/* ── Mobile landscape / tablet pequeno ── */
 @media(max-width:780px) {
-  .sidebar { display:none; }
+  .sidebar { display:none !important; }
+  .app { display:block; height:auto; overflow:auto; }
+  .main-wrap { width:100%; height:auto; overflow:visible; }
+  .scroll-area { height:auto; overflow:visible; padding-bottom:120px; }
+
   .song-section { padding:0 16px 24px; }
-  .hero { padding:0 16px 24px; }
   .back-bar { padding:10px 16px; }
+
+  /* Hero empilhado verticalmente */
+  .hero { padding:20px 16px 24px; min-height:auto; align-items:flex-start; }
+  .hero-content { flex-direction:column; align-items:center; text-align:center; gap:16px; }
+  .cover-img { width:160px; height:160px; }
+  .hero-info { min-width:0; width:100%; padding-bottom:0; }
+  .pl-name { font-size:1.5rem; }
+  .actions-row { justify-content:center; }
+
+  /* Tabela */
   .td-album,.td-date,.c-album,.c-date { display:none; }
+  .td-title { padding-left:8px; }
+
+  /* Barra de now-playing */
+  .now-playing-bar { padding:10px 16px; }
+  .np-left { gap:10px; }
+  .np-title { font-size:.82rem; }
+  .np-artist { font-size:.72rem; }
+  .np-right { display:none; }
+}
+
+/* ── Mobile portrait ── */
+@media(max-width:480px) {
+  .cover-img { width:130px; height:130px; }
+  .pl-name { font-size:1.2rem; }
+  .pl-meta { font-size:.75rem; }
+  .btn-play { width:44px; height:44px; }
+  .song-filter-bar { flex-direction:column; gap:8px; }
+  .song-search { max-width:100%; }
+
+  /* Esconde mais colunas na tabela */
+  .td-dur,.c-dur { display:none; }
+  .td-more { width:32px; }
+
+  /* Controles da barra now-playing compactos */
+  .np-controls { gap:12px; }
+  .np-ctrl { width:28px; height:28px; }
+  .np-play-btn { width:38px; height:38px; }
+}
+
+/* ── Mobile pequeno ── */
+@media(max-width:380px) {
+  .cover-img { width:110px; height:110px; }
+  .actions-row { gap:8px; }
+  .btn-shuffle, .btn-like-pl, .btn-more { width:32px; height:32px; }
 }

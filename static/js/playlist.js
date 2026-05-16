@@ -19,6 +19,9 @@ let npPlaying   = false;
 let likedIds    = new Set();
 let currentUserId = null;
 let shuffleOn   = false;
+let repeatOn    = false;
+let volLevel    = 0.7;
+let muted       = false;
 let songFilter  = '';
 let poolFilter  = '';
 let sortCol     = null;
@@ -152,7 +155,7 @@ function playAudioPreview(songId) {
   if (!url) { toast('Preview não disponível para esta música'); return; }
   if (audioEl) { audioEl.pause(); audioEl = null; }
   audioEl = new Audio(url);
-  audioEl.volume = 0.7;
+  audioEl.volume = muted ? 0 : volLevel;
   audioEl.play().catch(()=>{});
   audioEl.addEventListener('timeupdate', () => {
     const dur = audioEl.duration || 30;
@@ -314,6 +317,11 @@ function renderNowPlaying() {
   pbtn.innerHTML=isPlay
     ?`<svg viewBox="0 0 24 24" style="margin-left:0"><rect x="6" y="4" width="4" height="16" style="fill:#121212"/><rect x="14" y="4" width="4" height="16" style="fill:#121212"/></svg>`
     :`<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+
+  // sincroniza estados visuais
+  const nr=document.getElementById('npRepeat');
+  if(nr) nr.classList.toggle('active',repeatOn);
+  _renderVolIcon();
 }
 
 // ── Reprodução ───────────────────────────────────────────────────────────────
@@ -361,6 +369,51 @@ function toggleShuffle() {
   document.getElementById('shuffleBtn').classList.toggle('active',shuffleOn);
   document.getElementById('npShuffle').classList.toggle('active',shuffleOn);
   toast(shuffleOn?'Shuffle ativado':'Shuffle desativado');
+}
+
+function toggleRepeat() {
+  repeatOn=!repeatOn;
+  const btn=document.getElementById('npRepeat');
+  if(btn) btn.classList.toggle('active',repeatOn);
+  if(audioEl) {
+    audioEl.loop=repeatOn;
+    if(repeatOn) {
+      // sobrescreve o onended para não avançar
+      audioEl.onended=null;
+    } else {
+      audioEl.onended=()=>{ npPlaying=false; setMusicPlaying(false); renderNowPlaying(); renderSongs(); };
+    }
+  }
+  toast(repeatOn?'Repetição ativada':'Repetição desativada');
+}
+
+function seekVol(event) {
+  const track=document.getElementById('npVolTrack');
+  if(!track) return;
+  const rect=track.getBoundingClientRect();
+  volLevel=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width));
+  muted=false;
+  const fill=document.getElementById('npVolFill');
+  if(fill) fill.style.width=(volLevel*100)+'%';
+  if(audioEl) audioEl.volume=volLevel;
+  // atualiza ícone do botão de volume
+  _renderVolIcon();
+}
+
+function toggleMute() {
+  muted=!muted;
+  if(audioEl) audioEl.volume=muted?0:volLevel;
+  _renderVolIcon();
+}
+
+function _renderVolIcon() {
+  const btn=document.getElementById('npVolBtn');
+  if(!btn) return;
+  const fill=document.getElementById('npVolFill');
+  if(fill) fill.style.width=(muted?0:volLevel*100)+'%';
+  btn.innerHTML = muted || volLevel===0
+    ? `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>`
+    : `<svg viewBox="0 0 24 24"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`;
 }
 
 // ── Likes ────────────────────────────────────────────────────────────────────

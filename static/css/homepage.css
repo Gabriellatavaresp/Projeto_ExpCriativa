@@ -667,12 +667,29 @@ button { font: inherit; border: 0; cursor: pointer; background: none; color: inh
   .quick-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ── Tablet ── */
+@media (max-width: 768px) {
+  .topbar { padding: 12px 20px; gap: 12px; }
+  .search-wrap { max-width: 100%; flex: 1; }
+  .scroll-area { padding: 16px 20px calc(var(--player-h) + 20px); }
+  .card-row { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .quick-grid { grid-template-columns: repeat(2, 1fr); }
+  .section-header { margin-bottom: 14px; }
+  .artist-card { min-width: 120px; }
+  .artist-avatar-home { width: 90px; height: 90px; }
+}
+
 @media (max-width: 640px) {
   .topbar { padding: 12px 16px; }
   .scroll-area { padding: 20px 16px calc(var(--player-h) + 20px); }
 
   .card-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .quick-grid { grid-template-columns: 1fr; }
+  .music-card h4 { font-size: .82rem; }
+  .music-card p  { font-size: .72rem; }
+
+  .artist-avatar-home { width: 76px; height: 76px; }
+  .artist-card h4 { font-size: .8rem; }
 
   .player-bar {
     height: auto;
@@ -686,4 +703,11 @@ button { font: inherit; border: 0; cursor: pointer; background: none; color: inh
   .progress-row { max-width: 100%; }
 
   .greeting { font-size: 1.6rem; }
+}
+
+/* ── Mobile pequeno ── */
+@media (max-width: 400px) {
+  .card-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .topbar-right { gap: 8px; }
+  .notif-btn { display: none; }
 }

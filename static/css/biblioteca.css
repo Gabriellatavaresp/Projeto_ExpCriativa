@@ -588,3 +588,42 @@ html, body {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast svg { width: 16px; height: 16px; stroke: var(--accent-green); fill: none; stroke-width: 2.5; stroke-linecap: round; }
+/* ══════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════ */
+
+/* ── Tablet — sidebar some completamente ── */
+@media (max-width: 768px) {
+  .sidebar { display: none !important; }
+  .app { display: block; height: auto; overflow: auto; }
+  .main { height: auto; overflow: visible; width: 100%; }
+  .main-header { padding: 20px 20px 12px; }
+  .main-content { padding: 0 20px 24px; }
+  .lib-actions { flex-wrap: wrap; gap: 10px; }
+  .modal-overlay { padding: 12px; }
+  .modal-box { width: calc(100vw - 24px) !important; max-width: 100% !important; }
+  .pl-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; }
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .main-header { padding: 16px 16px 8px; }
+  .main-content { padding: 0 16px 24px; }
+  .main-title { font-size: 1.4rem; }
+  .lib-actions { flex-direction: column; align-items: stretch; gap: 8px; }
+  .search-bar { max-width: 100%; }
+  .filter-pills { flex-wrap: wrap; gap: 6px; }
+  .pl-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
+  .modal-box { width: calc(100vw - 24px) !important; max-width: 100% !important; padding: 20px 16px !important; }
+  /* Tabela de curtidas — esconde colunas secundárias */
+  .songs-table th:nth-child(3),
+  .songs-table td:nth-child(3),
+  .songs-table th:nth-child(4),
+  .songs-table td:nth-child(4) { display: none; }
+}
+
+/* ── Mobile pequeno ── */
+@media (max-width: 400px) {
+  .pl-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .pl-card-name { font-size: .78rem; }
+}

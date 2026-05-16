@@ -68,12 +68,12 @@
     }
     .ap-ctrl:hover { color: #F0F6FF; transform: scale(1.1); }
     .ap-ctrl.active { color: #10B981; }
-    .ap-play {
+    .aurora-player-bar .ap-play {
       width: 36px; height: 36px; border-radius: 50%;
-      background: #fff; color: #0A0F1E;
+      background: #003c92 !important; color: #fff;
       transition: transform .2s, box-shadow .2s;
     }
-    .ap-play:hover { transform: scale(1.08); box-shadow: 0 0 20px rgba(255,255,255,.25); }
+    .aurora-player-bar .ap-play:hover { transform: scale(1.08); box-shadow: 0 0 20px rgba(255,255,255,.25); }
 
     .ap-progress-row { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 520px; }
     .ap-time { font-size: .7rem; color: #546380; min-width: 32px; text-align: center; }
@@ -188,6 +188,15 @@
     return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
   }
 
+  /** Converte "MM:SS" ou "HH:MM:SS" em segundos */
+  function _parseDur(str) {
+    if (!str) return 0;
+    const parts = str.split(':').map(Number);
+    if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    if (parts.length === 2) return parts[0] * 60 + parts[1];
+    return 0;
+  }
+
   function _el(id) { return document.getElementById(id); }
 
   function _setPlayIcon(playing) {
@@ -229,10 +238,13 @@
       _audio.volume = _vol;
       if (_playing) _audio.play().catch(() => {});
 
+      // Usa a duração real da música (do banco) como referência para a barra,
+      // não o _audio.duration (que é o preview de 30s do Deezer).
+      const trackDurSec = _parseDur(t.duracao || t.dur) || _audio.duration || 30;
+
       _audio.ontimeupdate = () => {
-        const dur = _audio.duration || 30;
-        const pct = (_audio.currentTime / dur) * 100;
-        _el('apProgressFill').style.width = pct + '%';
+        const pct = (_audio.currentTime / trackDurSec) * 100;
+        _el('apProgressFill').style.width = Math.min(pct, 100) + '%';
         _el('apCurTime').textContent = _fmt(_audio.currentTime);
       };
 
@@ -248,6 +260,15 @@
 
     _setPlayIcon(_playing);
     if (typeof setMusicPlaying === 'function') setMusicPlaying(_playing);
+
+    // Registra no histórico de reprodução
+    if (_playing && (t.id_musica || t.id) && window._userId) {
+      fetch('/api/historico', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_usuario: window._userId, id_musica: t.id_musica || t.id }),
+      }).catch(() => {});
+    }
 
     // notify page-level callbacks
     if (typeof window.onPlayerTrackChange === 'function') {
@@ -343,9 +364,12 @@
     // progress bar — click to seek
     _el('apProgressBar').onclick = function (e) {
       if (!_audio) return;
+      const t = _tracks[_cur];
+      const seekDur = _parseDur(t && (t.duracao || t.dur)) || _audio.duration || 30;
       const rect = this.getBoundingClientRect();
       const pct  = (e.clientX - rect.left) / rect.width;
-      _audio.currentTime = pct * (_audio.duration || 30);
+      // Limita ao tempo real do áudio (preview pode ser menor que a duração real)
+      _audio.currentTime = Math.min(pct * seekDur, _audio.duration);
     };
 
     // volume bar — click to set

@@ -37,6 +37,7 @@
         <button class="admin-nav-item active" data-section="dashboard"><span class="nav-emoji">▣</span><span>Dashboard</span></button>
         <button class="admin-nav-item" data-section="musicas"><span class="nav-emoji">♫</span><span>Músicas</span></button>
         <button class="admin-nav-item" data-section="artistas"><span class="nav-emoji">◉</span><span>Artistas</span></button>
+        <button class="admin-nav-item" data-section="albuns"><span class="nav-emoji">💿</span><span>Álbuns</span></button>
         <button class="admin-nav-item" data-section="playlists"><span class="nav-emoji">☰</span><span>Playlists</span></button>
         <button class="admin-nav-item" data-section="usuarios"><span class="nav-emoji">⌘</span><span>Usuários</span></button>
       </nav>
@@ -114,6 +115,26 @@
       </section>
 
       
+      <section class="admin-content-grid" data-reveal data-section-content="albuns" style="display: none;">
+        <article class="table-panel glass-soft">
+          <div class="panel-head">
+            <div>
+              <span class="section-kicker">Álbuns</span>
+              <h3>Gerenciar álbuns</h3>
+            </div>
+            <button class="action-btn" onclick="openAddAlbum()">＋ Adicionar álbum</button>
+          </div>
+          <div class="table-wrap">
+            <table id="albunsTable">
+              <thead>
+                <tr><th>Nome do Álbum</th><th>Artista</th><th>Lançamento</th><th>Músicas</th><th>Ações</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
       <section class="admin-content-grid" data-reveal data-section-content="playlists" style="display: none;">
         <article class="table-panel glass-soft">
           <div class="panel-head">
@@ -174,7 +195,7 @@
       </form>
     </div>
   </div>
-  <script src="/static/js/admin.js"></script>
+  <script src="/static/js/admin.js?v=2"></script>
   <script>
     fetch('/api/me').then(r => r.json()).then(d => {
       document.getElementById('adminNomeUsuario').textContent = d.data.nome + ' (admin)';

@@ -154,11 +154,20 @@ async function loadArtists() {
   const row = document.getElementById('artistsRow');
   if (!row || !data) return;
   row.innerHTML = data.slice(0, 5).map((a, i) => `
-    <div class="artist-card">
+    <div class="artist-card" style="cursor:pointer" onclick="playArtist(${a.id_artista},'${esc(a.nome_artista)}')" title="Tocar músicas de ${esc(a.nome_artista)}">
       <div class="artist-avatar-home ${grad(i)}"></div>
       <h4>${esc(a.nome_artista)}</h4>
       <p>Artista · ${a.total_musicas||0} músicas</p>
     </div>`).join('');
+}
+
+async function playArtist(idArtista, nomeArtista) {
+  const res = await fetch('/api/musicas').catch(() => null);
+  if (!res || !res.ok) return;
+  const { data } = await res.json();
+  const songs = (data || []).filter(m => m.nome_artista === nomeArtista && m.preview_url);
+  if (!songs.length) return;
+  if (typeof window.setPlayerQueue === 'function') window.setPlayerQueue(songs, 0);
 }
 
 // playTrack é fornecido globalmente por player.js
@@ -192,6 +201,12 @@ async function loadUserProfile() {
     if (al) al.style.display = 'none';
   }
 
+
+  // Recarrega "Tocadas Recentemente" cada vez que o player troca de faixa
+  // Aguarda 800ms para o POST do histórico concluir antes de recarregar
+  window.onPlayerTrackChange = () => {
+    setTimeout(() => loadRecentlyPlayed(user.id_usuario), 800);
+  };
 
   // carregar seções que dependem do usuário
   loadSidebarPlaylists();
