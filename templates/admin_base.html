@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aurora Admin — {% block title %}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Syne:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/admin.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+  <script src="/static/js/aurora_swal.js"></script>
+</head>
+<body class="page-admin">
+  <div class="bg-grid"></div>
+  <div class="bg-orb"></div>
+  <div class="login-noise"></div>
+
+  <div class="admin-shell admin-shell-refined">
+    <aside class="admin-sidebar admin-sidebar-refined glass-dark">
+      <div class="brand-row brand-login">
+        <div class="brand-icon"></div>
+        <div>
+          <h1>Aurora Admin</h1>
+          <p>Painel de controle</p>
+        </div>
+      </div>
+
+      <div class="admin-sidebar-copy">
+        <span class="login-eyebrow">Operações</span>
+        <h2>Gerencie o seu catálogo</h2>
+        <p>Crie, edite e delete itens do sistema.</p>
+      </div>
+
+      <nav class="admin-nav admin-nav-refined">
+        <a class="admin-nav-item {% if active == 'dashboard' %}active{% endif %}" href="/admin"><span class="nav-emoji">▣</span><span>Dashboard</span></a>
+        <a class="admin-nav-item {% if active == 'musicas' %}active{% endif %}" href="/admin/musicas"><span class="nav-emoji">♫</span><span>Músicas</span></a>
+        <a class="admin-nav-item {% if active == 'artistas' %}active{% endif %}" href="/admin/artistas"><span class="nav-emoji">◉</span><span>Artistas</span></a>
+        <a class="admin-nav-item {% if active == 'albuns' %}active{% endif %}" href="/admin/albuns"><span class="nav-emoji">💿</span><span>Álbuns</span></a>
+        <a class="admin-nav-item {% if active == 'playlists' %}active{% endif %}" href="/admin/playlists"><span class="nav-emoji">☰</span><span>Playlists</span></a>
+        <a class="admin-nav-item {% if active == 'usuarios' %}active{% endif %}" href="/admin/usuarios"><span class="nav-emoji">⌘</span><span>Usuários</span></a>
+      </nav>
+
+      <div class="admin-sidebar-card glass">
+        <span class="featured-label">Precisa de ajuda?</span>
+        <strong>Todas as operações estão na página.</strong>
+        <p>Clique em um item do menu para começar.</p>
+        <a class="login-link" href="/home">Voltar para o site</a>
+      </div>
+    </aside>
+
+    <main class="admin-main admin-main-refined glass">
+      <header class="admin-topbar admin-topbar-refined">
+        <div>
+          <span class="section-kicker">Painel administrativo</span>
+          <h2 id="pageTitle">{% block page_title %}{% endblock %}</h2>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <span id="adminNomeUsuario" style="color:#ccc;font-size:0.9rem"></span>
+          <a href="/logout" style="color:#f87171;font-size:0.85rem;text-decoration:none;white-space:nowrap">Sair</a>
+        </div>
+      </header>
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+
+  {% block modal %}{% endblock %}
+  <script src="/static/js/admin_helpers.js"></script>
+  <script>
+    fetch('/api/me').then(r => r.json()).then(d => {
+      document.getElementById('adminNomeUsuario').textContent = d.data.nome + ' (admin)';
+    }).catch(() => {});
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

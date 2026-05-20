@@ -1,0 +1,44 @@
+{% extends "admin_base.html" %}
+{% block title %}Usuários{% endblock %}
+{% block page_title %}Controle de usuários{% endblock %}
+
+{% block content %}
+<section class="admin-content-grid" style="padding:20px 0">
+  <article class="table-panel glass-soft">
+    <div class="panel-head">
+      <div><span class="section-kicker">Usuários</span><h3>Gerenciar usuários</h3></div>
+      <button class="action-btn" onclick="openAddUsuario()">＋ Adicionar usuário</button>
+    </div>
+    <div class="table-wrap">
+      <table id="usuariosTable">
+        <thead><tr><th>Nome</th><th>Email</th><th>Status</th><th>Ações</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </article>
+</section>
+{% endblock %}
+
+{% block modal %}
+<div id="formModal" class="modal" style="display:none;" data-type="">
+  <div class="modal-overlay" onclick="closeModal()"></div>
+  <div class="modal-content glass">
+    <div class="modal-head">
+      <h3 id="modalTitle">Adicionar item</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <form id="itemForm" class="modal-form" onsubmit="handleFormSubmit(event)">
+      <div id="formFields"></div>
+      <div class="modal-actions">
+        <button type="button" class="ghost-btn" onclick="closeModal()">Cancelar</button>
+        <button type="submit" class="primary-btn">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin_helpers.js"></script>
+<script src="/static/js/admin_usuarios.js"></script>
+{% endblock %}

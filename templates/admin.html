@@ -1,205 +1,32 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aurora Admin</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Syne:wght@600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/css/admin.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-  <script src="/static/js/aurora_swal.js"></script>
-</head>
-<body class="page-admin">
-  <div class="bg-grid"></div>
-  <div class="bg-orb"></div>
-  <div class="login-noise"></div>
+{% extends "admin_base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard geral{% endblock %}
 
-  <div class="admin-shell admin-shell-refined">
-    <aside class="admin-sidebar admin-sidebar-refined glass-dark">
-      <div class="brand-row brand-login">
-        <div class="brand-icon"></div>
-        <div>
-          <h1>Aurora Admin</h1>
-          <p>Painel de controle</p>
-        </div>
-      </div>
-
-      <div class="admin-sidebar-copy">
-        <span class="login-eyebrow">Operações</span>
-        <h2>Gerencie o seu catálogo</h2>
-        <p>Crie, edite e delete itens do sistema.</p>
-      </div>
-
-      <nav class="admin-nav admin-nav-refined">
-        <button class="admin-nav-item active" data-section="dashboard"><span class="nav-emoji">▣</span><span>Dashboard</span></button>
-        <button class="admin-nav-item" data-section="musicas"><span class="nav-emoji">♫</span><span>Músicas</span></button>
-        <button class="admin-nav-item" data-section="artistas"><span class="nav-emoji">◉</span><span>Artistas</span></button>
-        <button class="admin-nav-item" data-section="albuns"><span class="nav-emoji">💿</span><span>Álbuns</span></button>
-        <button class="admin-nav-item" data-section="playlists"><span class="nav-emoji">☰</span><span>Playlists</span></button>
-        <button class="admin-nav-item" data-section="usuarios"><span class="nav-emoji">⌘</span><span>Usuários</span></button>
-      </nav>
-
-      <div class="admin-sidebar-card glass">
-        <span class="featured-label">Precisa de ajuda?</span>
-        <strong>Todas as operações estão na página.</strong>
-        <p>Clique em um item do menu para começar.</p>
-        <a class="login-link" href="/">Voltar para o site</a>
-      </div>
-    </aside>
-
-    <main class="admin-main admin-main-refined glass">
-      <header class="admin-topbar admin-topbar-refined">
-        <div>
-          <span class="section-kicker">Painel administrativo</span>
-          <h2 id="pageTitle">Dashboard</h2>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <span id="adminNomeUsuario" style="color:#ccc;font-size:0.9rem"></span>
-          <a href="/logout" style="color:#f87171;font-size:0.85rem;text-decoration:none;white-space:nowrap">Sair</a>
-        </div>
-      </header>
-
-      
-      <section class="admin-hero-refined section-panel" data-panel="dashboard" data-reveal>
-        <div>
-          <span class="login-eyebrow">Bem-vindo</span>
-          <h3>Painel de controle simplificado</h3>
-          <p>Selecione uma seção no menu para gerenciar músicas, artistas, playlists e usuários.</p>
-        </div>
-        <div id="dashboardStats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:24px;"></div>
-      </section>
-
-      
-      <section class="admin-content-grid" data-reveal data-section-content="musicas" style="display: none;">
-        <article class="table-panel glass-soft">
-          <div class="panel-head">
-            <div>
-              <span class="section-kicker">Músicas</span>
-              <h3>Gerenciar catálogo</h3>
-            </div>
-            <button class="action-btn" onclick="openAddMusica()">＋ Adicionar música</button>
-          </div>
-          <div class="table-wrap">
-            <table id="musicasTable">
-              <thead>
-                <tr><th>Título</th><th>Artista</th><th>Duração</th><th>Ações</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </article>
-      </section>
-
-      
-      <section class="admin-content-grid" data-reveal data-section-content="artistas" style="display: none;">
-        <article class="table-panel glass-soft">
-          <div class="panel-head">
-            <div>
-              <span class="section-kicker">Artistas</span>
-              <h3>Gerenciar artistas</h3>
-            </div>
-            <button class="action-btn" onclick="openAddArtista()">＋ Adicionar artista</button>
-          </div>
-          <div class="table-wrap">
-            <table id="artistasTable">
-              <thead>
-                <tr><th>Nome</th><th>Músicas</th><th>Álbuns</th><th>Ações</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </article>
-      </section>
-
-      
-      <section class="admin-content-grid" data-reveal data-section-content="albuns" style="display: none;">
-        <article class="table-panel glass-soft">
-          <div class="panel-head">
-            <div>
-              <span class="section-kicker">Álbuns</span>
-              <h3>Gerenciar álbuns</h3>
-            </div>
-            <button class="action-btn" onclick="openAddAlbum()">＋ Adicionar álbum</button>
-          </div>
-          <div class="table-wrap">
-            <table id="albunsTable">
-              <thead>
-                <tr><th>Nome do Álbum</th><th>Artista</th><th>Lançamento</th><th>Músicas</th><th>Ações</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </article>
-      </section>
-
-      <section class="admin-content-grid" data-reveal data-section-content="playlists" style="display: none;">
-        <article class="table-panel glass-soft">
-          <div class="panel-head">
-            <div>
-              <span class="section-kicker">Playlists</span>
-              <h3>Gerenciar playlists</h3>
-            </div>
-            <button class="action-btn" onclick="openAddPlaylist()">＋ Adicionar playlist</button>
-          </div>
-          <div class="table-wrap">
-            <table id="playlistsTable">
-              <thead>
-                <tr><th>Nome</th><th>Criador</th><th>Músicas</th><th>Ações</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </article>
-      </section>
-
-      
-      <section class="admin-content-grid" data-reveal data-section-content="usuarios" style="display: none;">
-        <article class="table-panel glass-soft">
-          <div class="panel-head">
-            <div>
-              <span class="section-kicker">Usuários</span>
-              <h3>Gerenciar usuários</h3>
-            </div>
-            <button class="action-btn" onclick="openAddUsuario()">＋ Adicionar usuário</button>
-          </div>
-          <div class="table-wrap">
-            <table id="usuariosTable">
-              <thead>
-                <tr><th>Nome</th><th>Email</th><th>Status</th><th>Ações</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </article>
-      </section>
-    </main>
+{% block content %}
+<section class="admin-hero-refined section-panel" data-reveal>
+  <div>
+    <span class="login-eyebrow">Bem-vindo</span>
+    <h3>Painel de controle simplificado</h3>
+    <p>Selecione uma seção no menu para gerenciar músicas, artistas, playlists e usuários.</p>
   </div>
+  <div id="dashboardStats" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:16px;margin-top:24px;"></div>
+</section>
+{% endblock %}
 
-  
-  <div id="formModal" class="modal" style="display: none;" data-type="">
-    <div class="modal-overlay" onclick="closeModal()"></div>
-    <div class="modal-content glass">
-      <div class="modal-head">
-        <h3 id="modalTitle">Adicionar item</h3>
-        <button class="modal-close" onclick="closeModal()">✕</button>
-      </div>
-      <form id="itemForm" class="modal-form" onsubmit="handleFormSubmit(event)">
-        <div id="formFields"></div>
-        <div class="modal-actions">
-          <button type="button" class="ghost-btn" onclick="closeModal()">Cancelar</button>
-          <button type="submit" class="primary-btn">Salvar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  <script src="/static/js/admin.js?v=2"></script>
-  <script>
-    fetch('/api/me').then(r => r.json()).then(d => {
-      document.getElementById('adminNomeUsuario').textContent = d.data.nome + ' (admin)';
-    });
-  </script>
-</body>
-</html>
+{% block scripts %}
+<script>
+async function loadDashboard() {
+  const res = await fetch('/api/dashboard');
+  const json = await res.json();
+  const d = json.data;
+  document.getElementById('dashboardStats').innerHTML = `
+    <div class="stat-card glass-soft"><span class="stat-number">${d.musicas}</span><span class="stat-label">Músicas</span></div>
+    <div class="stat-card glass-soft"><span class="stat-number">${d.artistas}</span><span class="stat-label">Artistas</span></div>
+    <div class="stat-card glass-soft"><span class="stat-number">${d.playlists}</span><span class="stat-label">Playlists</span></div>
+    <div class="stat-card glass-soft"><span class="stat-number">${d.usuarios}</span><span class="stat-label">Usuários</span></div>
+  `;
+}
+loadDashboard();
+</script>
+<script src="/static/js/admin_helpers.js"></script>
+{% endblock %}

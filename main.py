@@ -24,10 +24,22 @@ app.add_middleware(
     SessionMiddleware,
     secret_key="aurora_secret_key",
     session_cookie="aurora_session",
-    max_age=300,  # 5 minutos no servidor; JS controla o timeout de 1 min
+    max_age=5,  # 5 minutos no servidor; JS controla o timeout de 1 min
     same_site="lax",
     https_only=False
 )
+
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class RenovarSessaoMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        if "session" in request.scope and request.session.get("user_logged_in"):
+            request.session["last_activity"] = datetime.now().isoformat()
+        response = await call_next(request)
+        return response
+
+app.add_middleware(RenovarSessaoMiddleware)
+
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
@@ -198,26 +210,59 @@ async def admin_page(request: Request, db=Depends(get_db)):
         return RedirectResponse(url="/login", status_code=302)
     if request.session.get("perfil") != "admin":
         return RedirectResponse(url="/home", status_code=302)
-    
+    request.session["_ts"] = datetime.now().isoformat()
     with db.cursor() as cur:
         stats = {}
         for t, label in [("musica", "musicas"), ("artista", "artistas"),
                          ("playlist", "playlists"), ("usuario", "usuarios")]:
             cur.execute(f"SELECT COUNT(*) as total FROM {t}")
             stats[label] = cur.fetchone()["total"]
-        
-        cur.execute("SELECT id_usuario, nome, email, ativo FROM usuario ORDER BY nome LIMIT 20")
-        usuarios = serialize_list(cur.fetchall())
-    
-    return templates.TemplateResponse(
-        request=request,
-        name="admin.html",
-        context={
-            "stats": stats,
-            "usuarios": usuarios
-        }
-    )
+    return templates.TemplateResponse(request=request, name="admin.html", context={"active": "dashboard", "stats": stats})
 
+@app.get("/admin/musicas", response_class=HTMLResponse)
+async def admin_musicas(request: Request):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
+    if request.session.get("perfil") != "admin":
+        return RedirectResponse(url="/home", status_code=302)
+    request.session["_ts"] = datetime.now().isoformat()
+    return templates.TemplateResponse(request=request, name="admin_musicas.html", context={"active": "musicas"})
+
+@app.get("/admin/artistas", response_class=HTMLResponse)
+async def admin_artistas(request: Request):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
+    if request.session.get("perfil") != "admin":
+        return RedirectResponse(url="/home", status_code=302)
+    request.session["_ts"] = datetime.now().isoformat()
+    return templates.TemplateResponse(request=request, name="admin_artistas.html", context={"active": "artistas"})
+
+@app.get("/admin/albuns", response_class=HTMLResponse)
+async def admin_albuns(request: Request):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
+    if request.session.get("perfil") != "admin":
+        return RedirectResponse(url="/home", status_code=302)
+    request.session["_ts"] = datetime.now().isoformat()
+    return templates.TemplateResponse(request=request, name="admin_albuns.html", context={"active": "albuns"})
+
+@app.get("/admin/playlists", response_class=HTMLResponse)
+async def admin_playlists(request: Request):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
+    if request.session.get("perfil") != "admin":
+        return RedirectResponse(url="/home", status_code=302)
+    request.session["_ts"] = datetime.now().isoformat()
+    return templates.TemplateResponse(request=request, name="admin_playlists.html", context={"active": "playlists"})
+
+@app.get("/admin/usuarios", response_class=HTMLResponse)
+async def admin_usuarios(request: Request):
+    if not request.session.get("user_logged_in"):
+        return RedirectResponse(url="/login", status_code=302)
+    if request.session.get("perfil") != "admin":
+        return RedirectResponse(url="/home", status_code=302)
+    request.session["_ts"] = datetime.now().isoformat()
+    return templates.TemplateResponse(request=request, name="admin_usuarios.html", context={"active": "usuarios"})
 @app.get("/api/check-session")
 async def check_session(request: Request):
     if not request.session.get("user_logged_in"):
