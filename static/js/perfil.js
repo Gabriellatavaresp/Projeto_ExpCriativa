@@ -42,7 +42,7 @@ async function salvarPerfil() {
   const res = await fetch(`/api/usuarios/${userId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome, email, User: username, cpf, ativo: 1 }),
+    body: JSON.stringify({ nome, email, username, cpf, ativo: 1 }),
   });
   if (res.ok) {
     swalSuccess('Perfil atualizado!');

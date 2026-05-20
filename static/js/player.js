@@ -235,6 +235,7 @@
     const url = t.preview_url;
     if (url) {
       _audio = new Audio(url);
+      _audio.preload = 'auto';
       _audio.volume = _vol;
       if (_playing) _audio.play().catch(() => {});
 
