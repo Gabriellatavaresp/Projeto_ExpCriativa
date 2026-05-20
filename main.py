@@ -24,7 +24,7 @@ app.add_middleware(
     SessionMiddleware,
     secret_key="aurora_secret_key",
     session_cookie="aurora_session",
-    max_age=5,  # 5 minutos no servidor; JS controla o timeout de 1 min
+    max_age=300,  # 30 minutos no servidor; JS controla o timeout de 1 min
     same_site="lax",
     https_only=False
 )
