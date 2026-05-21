@@ -155,7 +155,6 @@ function openModal() {
 function closeModal() {
   document.getElementById('modalOverlay').classList.remove('open');
   document.getElementById('plName').value = '';
-  document.getElementById('plDesc').value = '';
   resetCoverPreview();
 }
 

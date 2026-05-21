@@ -10,10 +10,11 @@
   <link rel="stylesheet" href="/static/css/playlist.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
   <style>
-    /* A página de playlist tem seu próprio player — ocultar o global */
     .aurora-player-bar { display: none !important; }
-    /* Remover padding extra do player global nas áreas de scroll */
     .scroll-area { padding-bottom: 0 !important; }
+    .genre-select { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); color:#e8e8f0; border-radius:8px; padding:6px 12px; font-size:0.85rem; font-family:'DM Sans',sans-serif; outline:none; cursor:pointer; min-width:140px; }
+    .genre-select:focus { border-color:#6b9997; }
+    .genre-select option { background:#1a1a2e; color:#e8e8f0; }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
   <script src="/static/js/aurora_swal.js"></script>
@@ -41,17 +42,13 @@
           <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           Home
         </a>
-        <a class="nav-btn" href="/biblioteca">
+        <a class="nav-btn active" href="/biblioteca">
           <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
           Biblioteca
         </a>
         <a class="nav-btn" href="/curtidas">
           <svg viewBox="0 0 24 24"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3z"/></svg>
           Curtidas
-        </a>
-        <a class="nav-btn active" href="/playlist">
-          <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-          Playlists
         </a>
         <a class="nav-btn" href="/perfil">
           <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
@@ -113,8 +110,7 @@
                 <div class="pl-name" id="heroName" onclick="startEditName()">Playlist Name</div>
                 <input class="pl-name-input" id="heroNameInput" style="display:none" maxlength="60" onblur="finishEditName()" onkeydown="nameKeydown(event)" />
               </div>
-              <div class="pl-desc" id="heroDesc" onclick="startEditDesc()">Click to add a description…</div>
-              <textarea class="pl-desc-input" id="heroDescInput" rows="2" style="display:none" onblur="finishEditDesc()" onkeydown="descKeydown(event)" placeholder="Add a description…"></textarea>
+
               <div class="pl-meta" id="heroMeta"></div>
               <div class="actions-row">
                 <button class="btn-play" id="heroPlayBtn" onclick="playPlaylist()" title="Play">
@@ -139,7 +135,12 @@
           <div class="song-filter-bar">
             <div class="song-search">
               <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input id="songFilterInput" type="text" placeholder="Filter songs…" oninput="filterSongs()" />
+              <input id="songFilterInput" type="text" placeholder="Filtrar músicas…" oninput="filterSongs()" />
+            </div>
+            <div class="song-genre-filter">
+              <select id="genreFilter" class="genre-select" onchange="filterSongs()">
+                <option value="">Todos os gêneros</option>
+              </select>
             </div>
             <div class="filter-right">
               <div class="view-toggle">
@@ -262,23 +263,19 @@
     <div class="modal">
       <h2 class="modal-title">Editar Playlist</h2>
       <div class="edit-cover-row">
-        <div class="edit-cover-preview" id="editCoverPreview">
+        <div class="edit-cover-preview" id="editCoverPreview" style="display:flex;align-items:center;justify-content:center">
           <div class="no-img">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
           </div>
         </div>
         <div class="color-picker-wrap">
-          <div class="cpick-label">Escolher cor de tema</div>
+          <div class="cpick-label">Escolher cor da capa</div>
           <div class="swatches" id="editSwatches"></div>
         </div>
       </div>
       <div class="modal-field">
         <label>Nome playlist</label>
         <input id="editNameInput" type="text" placeholder="My Playlist" maxlength="60" />
-      </div>
-      <div class="modal-field">
-        <label>Description <span style="color:var(--text-faint);font-weight:400">(optional)</span></label>
-        <textarea id="editDescInput" rows="2" placeholder="Give your playlist a description…"></textarea>
       </div>
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeEditModal()">Cancelar</button>
@@ -293,7 +290,12 @@
       <h2 class="modal-title">Adicionar Músicas</h2>
       <div class="add-modal-search">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="addModalSearch" type="text" placeholder="Search songs, artists…" oninput="filterAddModal()" />
+        <input id="addModalSearch" type="text" placeholder="Buscar músicas, artistas…" oninput="filterAddModal()" />
+      </div>
+      <div style="padding:0 20px 8px">
+        <select id="addModalGenre" class="genre-select" style="width:100%" onchange="filterAddModal()">
+          <option value="">Todos os gêneros</option>
+        </select>
       </div>
       <div class="add-modal-list" id="addModalList"></div>
       <div class="modal-actions">

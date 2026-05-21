@@ -51,10 +51,7 @@
           <svg viewBox="0 0 24 24"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3z"/></svg>
           Curtidas
         </a>
-        <a href="/playlist" class="nav-item">
-          <svg viewBox="0 0 24 24"><path d="M15 6H3v2h12V6zm0 4H3v2h12v-2zM3 16h8v-2H3v2zM17 6v8.18c-.31-.11-.65-.18-1-.18-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3V8h3V6h-5z"/></svg>
-          Playlists
-        </a>
+
         <a href="/perfil" class="nav-item">
           <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
           Perfil
@@ -172,26 +169,22 @@
       <h2 class="modal-title">Criar Playlist</h2>
 
       <div class="cover-picker">
-        <div class="cover-preview" id="coverPreview" title="Escolha a cor da capa">
-          <img id="coverImg" src="" alt="cover" />
-          <svg viewBox="0 0 24 24">
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <circle cx="8.5" cy="8.5" r="1.5" />
-            <polyline points="21 15 16 10 5 21" />
+        <div class="cover-preview" id="coverPreview" title="Cor da capa" style="display:flex;align-items:center;justify-content:center">
+          <svg viewBox="0 0 24 24" style="width:32px;height:32px;opacity:.5;fill:none;stroke:#fff;stroke-width:2">
+            <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
           </svg>
-          <span>Adicionar capa</span>
         </div>
-        <div class="color-swatches" id="swatches"></div>
+        <div style="flex:1">
+          <div style="font-size:0.85rem;color:#aaa;margin-bottom:8px">Escolha a cor da capa</div>
+          <div class="color-swatches" id="swatches"></div>
+        </div>
       </div>
 
       <div class="modal-field">
         <label for="plName">Nome da Playlist</label>
         <input id="plName" type="text" placeholder="Minha Playlist #9" maxlength="60" />
       </div>
-      <div class="modal-field">
-        <label for="plDesc">Descrição <span style="color:var(--text-faint);font-weight:400">(opcional)</span></label>
-        <textarea id="plDesc" rows="2" placeholder="Adicione uma descição da sua playlist…"></textarea>
-      </div>
+
 
       <div class="modal-actions">
         <button class="btn-cancel" onclick="closeModal()">Cancelar</button>

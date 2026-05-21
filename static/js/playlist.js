@@ -28,6 +28,7 @@ let sortCol     = null;
 let sortDir     = 'asc';
 let ctxSongId   = null;
 let editColor   = '';
+let genreFilter = '';
 let progressPct = 0;
 let progressTimer = null;
 let audioEl     = null;   // HTMLAudioElement para preview Deezer
@@ -83,13 +84,14 @@ async function init() {
     id: m.id_musica, title: m.titulo, artist: m.nome_artista,
     album: m.nome_album, dur: parseDur(m.duracao), img: null,
     preview_url: m.preview_url || null,
-    // compat com player.js global
+    genero: m.genero || '',
     id_musica: m.id_musica, titulo: m.titulo, nome_artista: m.nome_artista,
     duracao: m.duracao,
   }));
 
   if (activePlId) await loadPlaylist(activePlId);
   else renderAll();
+  populateGenreFilter();
 }
 
 function parseDur(str) {
@@ -107,7 +109,7 @@ async function loadPlaylist(id) {
   const j = await r.json();
   const pl = j.data;
   activePl = {
-    id: pl.id_playlist, name: pl.nome, desc: pl.descricao||'',
+    id: pl.id_playlist, name: pl.nome,
     color: pl.cor||'#6b9997', publica: pl.publica,
     ownerId: pl.id_usuario, ownerName: pl.nome_usuario||'Aurora',
   };
@@ -116,7 +118,7 @@ async function loadPlaylist(id) {
     album: m.nome_album, dur: parseDur(m.duracao),
     added: m.data_adicionada||'', img: null,
     preview_url: m.preview_url || null,
-    // compat com player.js global
+    genero: m.genero || '',
     id_musica: m.id_musica, titulo: m.titulo, nome_artista: m.nome_artista,
     duracao: m.duracao,
   }));
@@ -200,8 +202,6 @@ function renderHero() {
   document.getElementById('barTitle').textContent = pl.name;
   document.getElementById('heroType').textContent = 'Playlist';
   document.getElementById('heroName').textContent = pl.name;
-  document.getElementById('heroDesc').textContent = pl.desc || (isOwner ? 'Clique para adicionar uma descrição…' : '');
-  document.getElementById('heroDesc').style.color = pl.desc ? '' : 'var(--text-faint)';
   document.getElementById('heroCover').style.background = `linear-gradient(135deg,${pl.color}99,${pl.color}cc)`;
   document.getElementById('heroCover').src = '';
   document.getElementById('heroBg').style.background = `linear-gradient(to bottom,${pl.color}88 0%,var(--bg) 100%)`;
@@ -213,8 +213,6 @@ function renderHero() {
   // edição só para dono
   document.getElementById('heroName').onclick = isOwner ? startEditName : null;
   document.getElementById('heroName').style.cursor = isOwner ? 'text' : 'default';
-  document.getElementById('heroDesc').onclick = isOwner ? startEditDesc : null;
-  document.getElementById('heroDesc').style.cursor = isOwner ? 'text' : 'default';
   document.querySelector('.cover-wrap').onclick = isOwner ? openEditModal : null;
   document.querySelector('.cover-overlay').style.display = isOwner ? '' : 'none';
 
@@ -228,6 +226,9 @@ function renderSongs() {
   if (songFilter) {
     const q=songFilter.toLowerCase();
     list=list.filter(s=>s.title.toLowerCase().includes(q)||s.artist.toLowerCase().includes(q)||s.album.toLowerCase().includes(q));
+  }
+  if (genreFilter) {
+    list=list.filter(s=>s.genero===genreFilter);
   }
   if (sortCol) {
     list.sort((a,b)=>{
@@ -286,7 +287,8 @@ function renderSongs() {
 
 function renderPool() {
   const inPl=new Set(songs.map(s=>s.id));
-  const pool=allSongs.filter(s=>!inPl.has(s.id)&&(!poolFilter||s.title.toLowerCase().includes(poolFilter.toLowerCase())||s.artist.toLowerCase().includes(poolFilter.toLowerCase())));
+  const poolGenre = document.getElementById('recSearchGenre')?.value || '';
+  const pool=allSongs.filter(s=>!inPl.has(s.id)&&(!poolFilter||s.title.toLowerCase().includes(poolFilter.toLowerCase())||s.artist.toLowerCase().includes(poolFilter.toLowerCase()))&&(!poolGenre||s.genero===poolGenre));
   const list=document.getElementById('poolList');
   if(!pool.length){list.innerHTML=`<div style="padding:20px;color:var(--text-faint);font-size:13px;text-align:center">Nenhuma música para adicionar.</div>`;return;}
   list.innerHTML=pool.map(s=>`
@@ -445,7 +447,7 @@ function sortBy(col) {
   else{sortCol=col;sortDir='asc';}
   renderSongs();
 }
-function filterSongs() { songFilter=document.getElementById('songFilterInput').value; renderSongs(); }
+function filterSongs() { songFilter=document.getElementById('songFilterInput').value; genreFilter=document.getElementById('genreFilter')?.value||''; renderSongs(); }
 function filterPool()  { poolFilter=document.getElementById('recSearchInput').value; renderPool(); }
 function filterAddModal() { renderAddModal(); }
 
@@ -487,15 +489,7 @@ function finishEditName() {
 }
 function nameKeydown(e){ if(e.key==='Enter'){e.preventDefault();document.getElementById('heroNameInput').blur();} if(e.key==='Escape'){document.getElementById('heroNameInput').value=activePl.name;document.getElementById('heroNameInput').blur();}}
 
-function startEditDesc() {
-  const d=document.getElementById('heroDesc'),inp=document.getElementById('heroDescInput');
-  inp.value=activePl.desc||''; d.style.display='none'; inp.style.display='block'; inp.focus();
-}
-function finishEditDesc() {
-  const d=document.getElementById('heroDesc'),inp=document.getElementById('heroDescInput');
-  activePl.desc=inp.value.trim(); inp.style.display='none'; d.style.display=''; renderHero();
-}
-function descKeydown(e){ if(e.key==='Escape') document.getElementById('heroDescInput').blur(); }
+
 
 async function savePlaylistMeta() {
   await fetch(`/api/playlists/${activePlId}`,{
@@ -508,7 +502,6 @@ async function savePlaylistMeta() {
 function openEditModal() {
   if(!activePl) return;
   document.getElementById('editNameInput').value=activePl.name;
-  document.getElementById('editDescInput').value=activePl.desc||'';
   editColor=activePl.color;
   buildSwatches(); updateEditPreview();
   document.getElementById('editModal').classList.add('open');
@@ -527,7 +520,7 @@ function updateEditPreview() {
 async function saveEdit() {
   const name=document.getElementById('editNameInput').value.trim();
   if(!name){document.getElementById('editNameInput').focus();return;}
-  activePl.name=name; activePl.desc=document.getElementById('editDescInput').value.trim(); activePl.color=editColor;
+  activePl.name=name; activePl.color=editColor;
   await savePlaylistMeta();
   closeEditModal(); toast('Playlist atualizada'); renderHero(); renderSidebar();
 }
@@ -537,8 +530,9 @@ function openAddModal(){ document.getElementById('addModalSearch').value=''; ren
 function closeAddModal(){ document.getElementById('addModal').classList.remove('open'); renderPool(); }
 function renderAddModal() {
   const q=document.getElementById('addModalSearch').value.toLowerCase();
+  const g=document.getElementById('addModalGenre')?.value||'';
   const inPl=new Set(songs.map(s=>s.id));
-  const pool=allSongs.filter(s=>!inPl.has(s.id)&&(!q||s.title.toLowerCase().includes(q)||s.artist.toLowerCase().includes(q)||s.album.toLowerCase().includes(q)));
+  const pool=allSongs.filter(s=>!inPl.has(s.id)&&(!q||s.title.toLowerCase().includes(q)||s.artist.toLowerCase().includes(q)||s.album.toLowerCase().includes(q))&&(!g||s.genero===g));
   const list=document.getElementById('addModalList');
   if(!pool.length){list.innerHTML=`<div style="padding:24px;color:var(--text-faint);font-size:13px;text-align:center">Nenhuma música encontrada.</div>`;return;}
   list.innerHTML=pool.map(s=>`
@@ -570,6 +564,16 @@ function ctxAction(a){ if(!ctxSongId)return; if(a==='play')playSong(ctxSongId); 
 function openPlaylistCtx(e){ e.stopPropagation(); const m=document.getElementById('plCtxMenu'); m.classList.add('open'); m.style.left=Math.min(e.clientX,window.innerWidth-240)+'px'; m.style.top=Math.min(e.clientY,window.innerHeight-260)+'px'; }
 function closePlCtx(){ document.getElementById('plCtxMenu').classList.remove('open'); }
 function copyLink(){ navigator.clipboard?.writeText(window.location.href).catch(()=>{}); toast('Link copiado!'); }
+
+// ── Filtro de gênero ──────────────────────────────────────────────────────
+function populateGenreFilter() {
+  const genres = [...new Set(allSongs.map(s => s.genero).filter(Boolean))].sort();
+  const opts = '<option value="">Todos os gêneros</option>' + genres.map(g => `<option value="${g}">${g}</option>`).join('');
+  const sel1 = document.getElementById('genreFilter');
+  const sel2 = document.getElementById('addModalGenre');
+  if (sel1) sel1.innerHTML = opts;
+  if (sel2) sel2.innerHTML = opts;
+}
 
 // ── Toast ─────────────────────────────────────────────────────────────────
 let toastTimer;
