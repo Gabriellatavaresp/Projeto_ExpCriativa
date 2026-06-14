@@ -284,7 +284,7 @@ async def get_me(request: Request, db=Depends(get_db)):
     id_usuario = request.session.get("id_usuario")
     with db.cursor() as cur:
         cur.execute(
-            "SELECT id_usuario, nome, email, username, cpf, is_admin, foto_perfil FROM usuario WHERE id_usuario = %s",
+            "SELECT id_usuario, nome, email, username, cpf, is_admin, foto_perfil, artista_favorito FROM usuario WHERE id_usuario = %s",
             (id_usuario,)
         )
         user = cur.fetchone()
@@ -301,6 +301,7 @@ async def get_me(request: Request, db=Depends(get_db)):
         "cpf": user["cpf"],
         "is_admin": user["is_admin"],
         "foto_perfil": foto_b64,
+        "artista_favorito": user["artista_favorito"],
     })
 
 @app.post("/api/me/foto")
@@ -680,10 +681,10 @@ async def criar_usuario(body: dict = Body(...), db=Depends(get_db)):
 async def atualizar_usuario(id: int, body: dict = Body(...), db=Depends(get_db)):
     with db.cursor() as cur:
         cur.execute("""
-            UPDATE usuario SET nome=%s, email=%s, cpf=%s, username=%s, ativo=%s
+            UPDATE usuario SET nome=%s, email=%s, cpf=%s, username=%s, ativo=%s, artista_favorito=%s
             WHERE id_usuario=%s
         """, (body.get("nome"), body.get("email"), body.get("cpf"),
-              body.get("User"), body.get("ativo", 1), id))
+              body.get("username") or body.get("User"), body.get("ativo", 1), body.get("artista_favorito"), id))
         if cur.rowcount == 0:
             raise HTTPException(404, detail="Usuário não encontrado")
         db.commit()

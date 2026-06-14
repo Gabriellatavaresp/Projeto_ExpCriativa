@@ -11,6 +11,7 @@ async function init() {
   document.getElementById('fUsername').value = user.username || '';
   document.getElementById('fCpf').value      = user.cpf || '';
   document.getElementById('sidebarNome').textContent = user.nome;
+  document.getElementById('fArtistaFavorito').value = user.artista_favorito || '';
 
   const av = document.getElementById('avatarEl');
   if (user.foto_perfil) {
@@ -36,13 +37,14 @@ async function salvarPerfil() {
   const email    = document.getElementById('fEmail').value.trim();
   const username = document.getElementById('fUsername').value.trim();
   const cpf      = document.getElementById('fCpf').value;
+  const artista_favorito = document.getElementById('fArtistaFavorito').value.trim();
 
   if (!nome || !email) return swalWarning('Nome e e-mail são obrigatórios.');
 
   const res = await fetch(`/api/usuarios/${userId}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ nome, email, username, cpf, ativo: 1 }),
+    body: JSON.stringify({ nome, email, username, cpf, ativo: 1, artista_favorito}),
   });
   if (res.ok) {
     swalSuccess('Perfil atualizado!');

@@ -73,7 +73,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `AuroraStreaming`.`usuario` (
   `id_usuario` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(150) NOT NULL,
-  `username` VARCHAR(50) NOT NULL,
+  `username` VARCHAR(50) NULL DEFAULT NULL,
   `email` VARCHAR(100) NOT NULL,
   `senha` VARCHAR(255) NOT NULL,
   `foto_perfil` LONGBLOB NULL DEFAULT NULL,
@@ -81,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `AuroraStreaming`.`usuario` (
   `is_admin` TINYINT(1) NULL DEFAULT '0',
   `cpf` VARCHAR(14) NULL DEFAULT NULL,
   `data_criacao` DATETIME NULL DEFAULT CURRENT_TIMESTAMP,
+  `artista_favorito` VARCHAR(150) NULL DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   UNIQUE INDEX `email` (`email` ASC) VISIBLE,
   UNIQUE INDEX `cpf` (`cpf` ASC) VISIBLE,
